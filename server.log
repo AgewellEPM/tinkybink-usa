@@ -7,13 +7,292 @@
    - Network:      http://10.0.0.236:3456
 
  ✓ Starting...
- ✓ Ready in 1163ms
+ ✓ Ready in 1581ms
  ○ Compiling / ...
- ✓ Compiled / in 1004ms (1591 modules)
- HEAD / 200 in 1253ms
- ✓ Compiled in 36ms (740 modules)
- GET / 200 in 90ms
- ⚠ Cross origin request detected from 10.0.0.236 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- ✓ Compiled /favicon.ico in 179ms (868 modules)
- GET /favicon.ico 200 in 276ms
+ ✓ Compiled / in 2.7s (1676 modules)
+ GET / 200 in 2969ms
+ ✓ Compiled in 225ms (784 modules)
+ ✓ Compiled in 83ms (784 modules)
+ ✓ Compiled in 81ms (784 modules)
+ ✓ Compiled in 118ms (784 modules)
+ ✓ Compiled in 268ms (784 modules)
+ ✓ Compiled in 105ms (784 modules)
+ ✓ Compiled in 147ms (784 modules)
+ ✓ Compiled in 90ms (784 modules)
+ ✓ Compiled in 69ms (784 modules)
+ ✓ Compiled in 93ms (784 modules)
+ ✓ Compiled in 188ms (784 modules)
+ ✓ Compiled in 269ms (784 modules)
+ ✓ Compiled in 219ms (784 modules)
+ ✓ Compiled in 68ms (784 modules)
+ ✓ Compiled in 158ms (784 modules)
+ ✓ Compiled in 78ms (784 modules)
+ ✓ Compiled in 92ms (784 modules)
+ ✓ Compiled in 118ms (784 modules)
+ ✓ Compiled in 330ms (784 modules)
+ ✓ Compiled in 326ms (784 modules)
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Unexpected eof
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:592:1]
+ [2m589[0m |       )}
+ [2m590[0m |     </>
+ [2m591[0m |   );
+ [2m592[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected unicode escape
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:367:1]
+ [2m364[0m |         let qrData = '';
+ [2m365[0m |         switch(action) {
+ [2m366[0m |           case 'speak':
+ [2m367[0m |             qrData = \`https://tinkybink.com/speak?text=\${encodeURIComponent(tile.text)}\`;
+     : [35;1m                     ^[0m
+ [2m368[0m |             break;
+ [2m369[0m |           case 'custom':
+ [2m370[0m |             const customUrl = document.getElementById('customUrl').value || 'https://example.com/{TEXT}';
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected unicode escape
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:406:1]
+ [2m403[0m |         let qrData = '';
+ [2m404[0m |         switch(action) {
+ [2m405[0m |           case 'speak':
+ [2m406[0m |             qrData = \`https://tinkybink.com/speak?text=\${encodeURIComponent(tile.text)}\`;
+     : [35;1m                     ^[0m
+ [2m407[0m |             break;
+ [2m408[0m |           case 'custom':
+ [2m409[0m |             const customUrl = document.getElementById('customUrl').value || 'https://example.com/{TEXT}';
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected unicode escape
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:420:1]
+ [2m417[0m |         const cardSize = size === 'small' ? '2in' : size === 'medium' ? '2.5in' : '3in';
+ [2m418[0m |         const qrSize = size === 'small' ? '1in' : size === 'medium' ? '1.5in' : '2in';
+ [2m419[0m |         
+ [2m420[0m |         return \`
+     : [35;1m               ^[0m
+ [2m421[0m |           <div class="qr-card" style="width: \${cardSize}; height: \${cardSize}; border: 2px solid #000; 
+ [2m422[0m |                                    padding: 8px; display: inline-block; margin: 5px; text-align: center;
+ [2m423[0m |                                    page-break-inside: avoid; background: white; color: black;">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected ';', got 'class'
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:520:1]
+ [2m517[0m |     modal.style.zIndex = '10000';
+ [2m518[0m |     
+ [2m519[0m |     modal.innerHTML = `
+ [2m520[0m |       <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+     : [35;1m           ^^^^^[0m
+ [2m521[0m |         <div class="modal-header">
+ [2m522[0m |           <h2>📚 Story Builder</h2>
+ [2m523[0m |           <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected unicode escape
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:434:1]
+ [2m431[0m |         `;
+ [2m432[0m |       }).join('');
+ [2m433[0m |       
+ [2m434[0m |       const html = \`
+     : [35;1m                   ^[0m
+ [2m435[0m |         <!DOCTYPE html>
+ [2m436[0m |         <html>
+ [2m437[0m |         <head>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected a semicolon
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:520:1]
+ [2m517[0m |     modal.style.zIndex = '10000';
+ [2m518[0m |     
+ [2m519[0m |     modal.innerHTML = `
+ [2m520[0m |       <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+     : [35;1m           ^^^^^[0m
+ [2m521[0m |         <div class="modal-header">
+ [2m522[0m |           <h2>📚 Story Builder</h2>
+ [2m523[0m |           <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+     `----
+  [31mx[0m Expected ';', '}' or <eof>
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:521:1]
+ [2m518[0m |         
+ [2m519[0m |         modal.innerHTML = `
+ [2m520[0m |           <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+ [2m521[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         <div class="modal-header">
+ [2m522[0m | [35;1m|[0m             <h2>📚 Story Builder</h2>
+ [2m523[0m | [35;1m|[0m             <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+ [2m524[0m | [35;1m|[0m           </div>
+ [2m525[0m | [35;1m|[0m           
+ [2m526[0m | [35;1m|[0m[35;1m-[0m[35;1m>[0m         <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+     : [35;1m`[0m[35;1m---[0m[33;1m             ^^^^^[0m
+     : [35;1m`[0m[35;1m---[0m[35;1m-[0m [35;1mThis is the expression part of an expression statement[0m
+ [2m527[0m |               <!-- Left Panel: Settings -->
+ [2m528[0m |               <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+ [2m529[0m |                 
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected a semicolon
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:520:1]
+ [2m517[0m |     modal.style.zIndex = '10000';
+ [2m518[0m |     
+ [2m519[0m |     modal.innerHTML = `
+ [2m520[0m |       <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+     : [35;1m           ^^^^^[0m
+ [2m521[0m |         <div class="modal-header">
+ [2m522[0m |           <h2>📚 Story Builder</h2>
+ [2m523[0m |           <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+     `----
+  [31mx[0m Expected ';', '}' or <eof>
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:521:1]
+ [2m518[0m |         
+ [2m519[0m |         modal.innerHTML = `
+ [2m520[0m |           <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+ [2m521[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         <div class="modal-header">
+ [2m522[0m | [35;1m|[0m             <h2>📚 Story Builder</h2>
+ [2m523[0m | [35;1m|[0m             <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+ [2m524[0m | [35;1m|[0m           </div>
+ [2m525[0m | [35;1m|[0m           
+ [2m526[0m | [35;1m|[0m[35;1m-[0m[35;1m>[0m         <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+     : [35;1m`[0m[35;1m---[0m[33;1m             ^^^^^[0m
+     : [35;1m`[0m[35;1m---[0m[35;1m-[0m [35;1mThis is the expression part of an expression statement[0m
+ [2m527[0m |               <!-- Left Panel: Settings -->
+ [2m528[0m |               <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+ [2m529[0m |                 
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected a semicolon
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:520:1]
+ [2m517[0m |     modal.style.zIndex = '10000';
+ [2m518[0m |     
+ [2m519[0m |     modal.innerHTML = `
+ [2m520[0m |       <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+     : [35;1m           ^^^^^[0m
+ [2m521[0m |         <div class="modal-header">
+ [2m522[0m |           <h2>📚 Story Builder</h2>
+ [2m523[0m |           <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+     `----
+  [31mx[0m Expected ';', '}' or <eof>
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:521:1]
+ [2m518[0m |         
+ [2m519[0m |         modal.innerHTML = `
+ [2m520[0m |           <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+ [2m521[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         <div class="modal-header">
+ [2m522[0m | [35;1m|[0m             <h2>📚 Story Builder</h2>
+ [2m523[0m | [35;1m|[0m             <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+ [2m524[0m | [35;1m|[0m           </div>
+ [2m525[0m | [35;1m|[0m           
+ [2m526[0m | [35;1m|[0m[35;1m-[0m[35;1m>[0m         <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+     : [35;1m`[0m[35;1m---[0m[33;1m             ^^^^^[0m
+     : [35;1m`[0m[35;1m---[0m[35;1m-[0m [35;1mThis is the expression part of an expression statement[0m
+ [2m527[0m |               <!-- Left Panel: Settings -->
+ [2m528[0m |               <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+ [2m529[0m |                 
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+ ⨯ ./src/components/settings/sections/PECSFeaturesSection.tsx
+Error:   [31mx[0m Expected a semicolon
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:520:1]
+ [2m517[0m |     modal.style.zIndex = '10000';
+ [2m518[0m |     
+ [2m519[0m |     modal.innerHTML = `
+ [2m520[0m |       <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+     : [35;1m           ^^^^^[0m
+ [2m521[0m |         <div class="modal-header">
+ [2m522[0m |           <h2>📚 Story Builder</h2>
+ [2m523[0m |           <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+     `----
+  [31mx[0m Expected ';', '}' or <eof>
+     ,-[[36;1;4m/Users/lukekist/tinkybink-usa/src/components/settings/sections/PECSFeaturesSection.tsx[0m:521:1]
+ [2m518[0m |         
+ [2m519[0m |         modal.innerHTML = `
+ [2m520[0m |           <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+ [2m521[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         <div class="modal-header">
+ [2m522[0m | [35;1m|[0m             <h2>📚 Story Builder</h2>
+ [2m523[0m | [35;1m|[0m             <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+ [2m524[0m | [35;1m|[0m           </div>
+ [2m525[0m | [35;1m|[0m           
+ [2m526[0m | [35;1m|[0m[35;1m-[0m[35;1m>[0m         <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+     : [35;1m`[0m[35;1m---[0m[33;1m             ^^^^^[0m
+     : [35;1m`[0m[35;1m---[0m[35;1m-[0m [35;1mThis is the expression part of an expression statement[0m
+ [2m527[0m |               <!-- Left Panel: Settings -->
+ [2m528[0m |               <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+ [2m529[0m |                 
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/settings/sections/PECSFeaturesSection.tsx
+./src/components/layouts/SettingsPanel.tsx
+./src/app/page.tsx
+[?25h

@@ -16,112 +16,174 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { BillingService } from '@/modules/healthcare/billing-service';
-import { PatientService } from '@/modules/healthcare/patient-service';
-import { HIPAAService } from '@/modules/healthcare/hipaa-service';
+import { getBillingIntegrationService } from '@/modules/professional/billing-integration-service';
+import type { Claim, BillingProfile, CPTCode, BillingReport } from '@/modules/professional/billing-integration-service';
 
 export function BillingDashboard() {
-  const [billingService] = useState(() => new BillingService());
-  const [hipaaService] = useState(() => new HIPAAService());
-  const [patientService] = useState(() => new PatientService(hipaaService));
+  const [billingService, setBillingService] = useState<ReturnType<typeof getBillingIntegrationService> | null>(null);
   
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [patients, setPatients] = useState<any[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
+  const [billingProfiles, setBillingProfiles] = useState<BillingProfile[]>([]);
+  const [cptCodes, setCptCodes] = useState<CPTCode[]>([]);
+  const [billingReport, setBillingReport] = useState<BillingReport | null>(null);
   const [metrics, setMetrics] = useState({
-    totalSessions: 0,
-    totalRevenue: 0,
+    totalClaims: 0,
+    totalBilled: 0,
+    totalCollected: 0,
     pendingClaims: 0,
     approvedClaims: 0
   });
-  const [showNewSession, setShowNewSession] = useState(false);
+  const [showNewClaim, setShowNewClaim] = useState(false);
+  const [showNewProfile, setShowNewProfile] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState('');
-  const [serviceType, setServiceType] = useState('');
-  const [duration, setDuration] = useState(30);
-  const [notes, setNotes] = useState('');
+  const [sessionIds, setSessionIds] = useState<string[]>([]);
+  const [profileData, setProfileData] = useState({
+    patientId: '',
+    insuranceProvider: '',
+    policyNumber: '',
+    subscriberId: '',
+    subscriberName: ''
+  });
 
   useEffect(() => {
-    loadDashboardData();
+    if (typeof window !== 'undefined') {
+      const service = getBillingIntegrationService();
+      setBillingService(service);
+      loadDashboardData(service);
+    }
   }, []);
 
-  const loadDashboardData = () => {
-    // Load sessions
+  const loadDashboardData = (service?: ReturnType<typeof getBillingIntegrationService>) => {
+    const billing = service || billingService;
+    if (!billing) return;
+
+    // Generate billing report for current month
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     
-    const report = billingService.getBillingReport(startOfMonth, endOfMonth);
-    setSessions(report.sessions.slice(-10).reverse());
+    const report = billing.generateBillingReport(startOfMonth, endOfMonth);
+    setBillingReport(report);
     
-    // Load patients
-    const allPatients = patientService.getActivePatients();
-    setPatients(allPatients);
+    // Get recent claims (last 10)
+    const allClaims = Array.from((billing as any).claims.values()) as Claim[];
+    const recentClaims = allClaims
+      .sort((a, b) => b.dateOfService.getTime() - a.dateOfService.getTime())
+      .slice(0, 10);
+    setClaims(recentClaims);
+    
+    // Get billing profiles
+    const profiles = Array.from((billing as any).billingProfiles.values()) as BillingProfile[];
+    setBillingProfiles(profiles);
+    
+    // Get CPT codes
+    const codes = Array.from((billing as any).cptCodes.values()) as CPTCode[];
+    setCptCodes(codes);
     
     // Calculate metrics
     setMetrics({
-      totalSessions: report.totalSessions,
-      totalRevenue: report.medicareTotal + report.medicaidTotal,
-      pendingClaims: report.byStatus['pending'] || 0,
-      approvedClaims: report.byStatus['paid'] || 0
+      totalClaims: report.summary.totalClaims,
+      totalBilled: report.summary.totalBilled,
+      totalCollected: report.summary.totalCollected,
+      pendingClaims: report.summary.totalPending,
+      approvedClaims: report.summary.totalCollected
     });
   };
 
-  const createBillingSession = () => {
-    if (!selectedPatient || !serviceType || !duration) {
+  const createBillingClaim = () => {
+    if (!selectedPatient || !sessionIds.length) {
+      alert('Please select a patient and add session IDs');
+      return;
+    }
+    
+    if (!billingService) return;
+    
+    try {
+      const claim = billingService.createClaim(
+        selectedPatient,
+        sessionIds,
+        { submitImmediately: false }
+      );
+      
+      if (claim) {
+        setShowNewClaim(false);
+        setSelectedPatient('');
+        setSessionIds([]);
+        loadDashboardData();
+        alert(`Claim created successfully! Claim ID: ${claim.id}`);
+      } else {
+        alert('Failed to create claim. Please check patient billing profile and authorization.');
+      }
+    } catch (error) {
+      alert('Error creating claim: ' + (error as Error).message);
+    }
+  };
+
+  const createBillingProfile = () => {
+    if (!profileData.patientId || !profileData.insuranceProvider || !profileData.policyNumber) {
       alert('Please fill in all required fields');
       return;
     }
     
+    if (!billingService) return;
+    
     try {
-      const sessionId = billingService.createSession(
-        selectedPatient,
-        'provider_001', // In real app, get from auth
-        serviceType,
-        duration,
-        notes
-      );
+      const profile: BillingProfile = {
+        patientId: profileData.patientId,
+        insuranceInfo: {
+          provider: profileData.insuranceProvider,
+          policyNumber: profileData.policyNumber,
+          subscriberId: profileData.subscriberId,
+          subscriberName: profileData.subscriberName,
+          relationship: 'self',
+          coverageType: 'private',
+          effectiveDate: new Date()
+        },
+        billingAddress: {
+          street1: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'US'
+        },
+        authorizations: [],
+        balance: 0,
+        creditLimit: 1000
+      };
       
-      // Add progress note
-      const patient = patientService.getPatient(selectedPatient);
-      if (patient) {
-        patientService.addProgressNote(selectedPatient, {
-          date: new Date().toISOString(),
-          sessionType: serviceType,
-          duration,
-          activities: ['AAC therapy session'],
-          performance: {
-            tilesUsed: 0,
-            sentencesCreated: 0,
-            communicationActs: 0,
-            independenceLevel: 'supervised'
-          },
-          notes,
-          providerId: 'provider_001'
-        });
-      }
+      billingService.upsertBillingProfile(profile);
       
-      setShowNewSession(false);
+      setShowNewProfile(false);
+      setProfileData({
+        patientId: '',
+        insuranceProvider: '',
+        policyNumber: '',
+        subscriberId: '',
+        subscriberName: ''
+      });
       loadDashboardData();
-      alert('Session created successfully!');
+      alert('Billing profile created successfully!');
     } catch (error) {
-      alert('Error creating session: ' + (error as Error).message);
+      alert('Error creating profile: ' + (error as Error).message);
     }
   };
 
   const exportReport = () => {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    if (!billingService) return;
     
-    const report = billingService.getBillingReport(startOfMonth, endOfMonth);
-    const csv = billingService.exportToCSV(report.sessions);
-    
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `billing_report_${now.toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      const exportData = billingService.exportBillingData('csv');
+      const blob = new Blob([exportData], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const now = new Date();
+      a.download = `billing_report_${now.toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Error exporting report: ' + (error as Error).message);
+    }
   };
 
   return (
@@ -131,11 +193,18 @@ export function BillingDashboard() {
         <h2 className="text-2xl font-bold text-white mb-6">Healthcare Billing Dashboard</h2>
         <div className="flex gap-4">
           <button
-            onClick={() => setShowNewSession(true)}
+            onClick={() => setShowNewClaim(true)}
             className="action-btn flex items-center gap-2"
           >
             <Plus size={20} />
-            New Session
+            New Claim
+          </button>
+          <button
+            onClick={() => setShowNewProfile(true)}
+            className="action-btn flex items-center gap-2"
+          >
+            <Users size={20} />
+            New Profile
           </button>
           <button
             onClick={exportReport}
@@ -159,8 +228,8 @@ export function BillingDashboard() {
             <Calendar size={24} />
           </div>
           <div className="metric-content">
-            <h3>Total Sessions</h3>
-            <p className="metric-value">{metrics.totalSessions}</p>
+            <h3>Total Claims</h3>
+            <p className="metric-value">{metrics.totalClaims}</p>
             <span className="metric-label">This Month</span>
           </div>
         </motion.div>
@@ -175,8 +244,8 @@ export function BillingDashboard() {
             <DollarSign size={24} />
           </div>
           <div className="metric-content">
-            <h3>Total Revenue</h3>
-            <p className="metric-value">${metrics.totalRevenue.toFixed(2)}</p>
+            <h3>Total Billed</h3>
+            <p className="metric-value">${metrics.totalBilled.toFixed(2)}</p>
             <span className="metric-label">Billed Amount</span>
           </div>
         </motion.div>
@@ -207,9 +276,9 @@ export function BillingDashboard() {
             <CheckCircle size={24} />
           </div>
           <div className="metric-content">
-            <h3>Approved Claims</h3>
-            <p className="metric-value">{metrics.approvedClaims}</p>
-            <span className="metric-label">This Month</span>
+            <h3>Total Collected</h3>
+            <p className="metric-value">${metrics.totalCollected.toFixed(2)}</p>
+            <span className="metric-label">Collected Amount</span>
           </div>
         </motion.div>
       </div>
@@ -221,30 +290,30 @@ export function BillingDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <h3 className="text-xl font-semibold mb-4">Recent Sessions</h3>
+        <h3 className="text-xl font-semibold mb-4">Recent Claims</h3>
         <div className="table-container">
           <table>
             <thead>
               <tr>
-                <th>Date</th>
+                <th>Claim ID</th>
                 <th>Patient ID</th>
-                <th>Service</th>
-                <th>Duration</th>
+                <th>Date of Service</th>
+                <th>Sessions</th>
                 <th>Amount</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {sessions.map((session) => (
-                <tr key={session.sessionId}>
-                  <td>{new Date(session.date).toLocaleDateString()}</td>
-                  <td>{session.patientId}</td>
-                  <td>{session.cptCode}</td>
-                  <td>{session.duration} min</td>
-                  <td>${session.medicareAmount.toFixed(2)}</td>
+              {claims.map((claim) => (
+                <tr key={claim.id}>
+                  <td>{claim.id.slice(-8)}</td>
+                  <td>{claim.patientId}</td>
+                  <td>{claim.dateOfService.toLocaleDateString()}</td>
+                  <td>{claim.sessions.length}</td>
+                  <td>${claim.totalAmount.toFixed(2)}</td>
                   <td>
-                    <span className={`status-badge ${session.status}`}>
-                      {session.status}
+                    <span className={`status-badge ${claim.status}`}>
+                      {claim.status}
                     </span>
                   </td>
                 </tr>
@@ -254,9 +323,9 @@ export function BillingDashboard() {
         </div>
       </motion.div>
 
-      {/* New Session Modal */}
-      {showNewSession && (
-        <div className="modal" onClick={() => setShowNewSession(false)}>
+      {/* New Claim Modal */}
+      {showNewClaim && (
+        <div className="modal" onClick={() => setShowNewClaim(false)}>
           <motion.div 
             className="modal-content"
             initial={{ scale: 0.9, opacity: 0 }}
@@ -264,10 +333,10 @@ export function BillingDashboard() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
-              <h2>Create New Billing Session</h2>
+              <h2>Create New Billing Claim</h2>
               <button 
                 className="close-btn"
-                onClick={() => setShowNewSession(false)}
+                onClick={() => setShowNewClaim(false)}
               >
                 ✖
               </button>
@@ -275,69 +344,132 @@ export function BillingDashboard() {
             
             <div className="modal-body">
               <div className="form-group">
-                <label>Patient</label>
+                <label>Patient ID</label>
                 <select 
                   value={selectedPatient}
                   onChange={(e) => setSelectedPatient(e.target.value)}
                   className="form-control"
                 >
                   <option value="">Select Patient</option>
-                  {patients.map(patient => (
-                    <option key={patient.patientId} value={patient.patientId}>
-                      {patient.firstName} {patient.lastName} - {patient.patientId}
+                  {billingProfiles.map(profile => (
+                    <option key={profile.patientId} value={profile.patientId}>
+                      {profile.patientId} - {profile.insuranceInfo.provider}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Service Type</label>
-                <select 
-                  value={serviceType}
-                  onChange={(e) => setServiceType(e.target.value)}
-                  className="form-control"
-                >
-                  <option value="">Select Service</option>
-                  {billingService.getCPTCodes().map(code => (
-                    <option key={code.code} value={code.code}>
-                      {code.code} - {code.description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Duration (minutes)</label>
+                <label>Session IDs (comma-separated)</label>
                 <input 
-                  type="number"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
-                  min="15"
-                  step="15"
+                  type="text"
+                  value={sessionIds.join(', ')}
+                  onChange={(e) => setSessionIds(e.target.value.split(',').map(s => s.trim()).filter(s => s))}
                   className="form-control"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Session Notes</label>
-                <textarea 
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={4}
-                  className="form-control"
-                  placeholder="Document session activities and patient progress..."
+                  placeholder="session_001, session_002, session_003"
                 />
               </div>
 
               <div className="modal-actions">
                 <button 
-                  onClick={createBillingSession}
+                  onClick={createBillingClaim}
                   className="action-btn"
                 >
-                  Create Session
+                  Create Claim
                 </button>
                 <button 
-                  onClick={() => setShowNewSession(false)}
+                  onClick={() => setShowNewClaim(false)}
+                  className="action-btn secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* New Profile Modal */}
+      {showNewProfile && (
+        <div className="modal" onClick={() => setShowNewProfile(false)}>
+          <motion.div 
+            className="modal-content"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>Create New Billing Profile</h2>
+              <button 
+                className="close-btn"
+                onClick={() => setShowNewProfile(false)}
+              >
+                ✖
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Patient ID *</label>
+                <input 
+                  type="text"
+                  value={profileData.patientId}
+                  onChange={(e) => setProfileData({...profileData, patientId: e.target.value})}
+                  className="form-control"
+                  placeholder="Enter patient ID"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Insurance Provider *</label>
+                <input 
+                  type="text"
+                  value={profileData.insuranceProvider}
+                  onChange={(e) => setProfileData({...profileData, insuranceProvider: e.target.value})}
+                  className="form-control"
+                  placeholder="e.g., Aetna, Blue Cross, Medicare"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Policy Number *</label>
+                <input 
+                  type="text"
+                  value={profileData.policyNumber}
+                  onChange={(e) => setProfileData({...profileData, policyNumber: e.target.value})}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Subscriber ID</label>
+                <input 
+                  type="text"
+                  value={profileData.subscriberId}
+                  onChange={(e) => setProfileData({...profileData, subscriberId: e.target.value})}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Subscriber Name</label>
+                <input 
+                  type="text"
+                  value={profileData.subscriberName}
+                  onChange={(e) => setProfileData({...profileData, subscriberName: e.target.value})}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button 
+                  onClick={createBillingProfile}
+                  className="action-btn"
+                >
+                  Create Profile
+                </button>
+                <button 
+                  onClick={() => setShowNewProfile(false)}
                   className="action-btn secondary"
                 >
                   Cancel

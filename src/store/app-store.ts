@@ -15,9 +15,19 @@ interface Tile {
 interface Board {
   id: string;
   name: string;
+  description: string;
   tiles: Tile[];
   category?: string;
   isDefault?: boolean;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  isShared: boolean;
+  settings: {
+    columns: number;
+    tileSize: string;
+    backgroundColor: string;
+  };
 }
 
 interface AppState {
@@ -28,7 +38,7 @@ interface AppState {
   currentBoard: string | null;
   boardHistory: string[];
   sentence: string;
-  currentView: 'tiles' | 'eliza' | 'healthcare';
+  currentView: 'tiles' | 'eliza' | 'healthcare' | 'billing';
   currentGame: string | null;
   
   // UI state
@@ -46,6 +56,7 @@ interface AppState {
   deleteTile: (id: string) => void;
   
   setBoards: (boards: Board[]) => void;
+  createBoard: (board: Board) => void;
   setCurrentBoard: (boardId: string | null) => void;
   navigateBack: () => void;
   
@@ -58,7 +69,7 @@ interface AppState {
   setSentence: (text: string) => void;
   
   // View actions
-  setCurrentView: (view: 'tiles' | 'eliza' | 'healthcare') => void;
+  setCurrentView: (view: 'tiles' | 'eliza' | 'healthcare' | 'billing') => void;
   
   // Game actions
   setCurrentGame: (gameType: string | null) => void;
@@ -105,6 +116,11 @@ export const useAppStore = create<AppState>()(
         })),
       
       setBoards: (boards) => set({ boards }),
+      
+      createBoard: (board) =>
+        set((state) => ({
+          boards: [...state.boards, board],
+        })),
       
       setCurrentBoard: (board) => set((state) => ({ 
         currentBoard: board,

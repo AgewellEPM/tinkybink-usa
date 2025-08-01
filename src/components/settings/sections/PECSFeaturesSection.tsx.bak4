@@ -1,0 +1,999 @@
+'use client';
+
+import { useState } from 'react';
+
+export function PECSFeaturesSection() {
+  const [status, setStatus] = useState('');
+
+  // EXACT COPY FROM HTML VERSION - PECS Generator
+  const openPECSGenerator = () => {
+    setStatus('Opening PECS Generator...');
+    
+    // Create the exact same modal structure as HTML version
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.style.zIndex = '10000';
+    
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+        <div class="modal-header">
+          <h2>🖨️ PECS Printout Generator</h2>
+          <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+        </div>
+        
+        <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+          <!-- Left Panel: Settings -->
+          <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+            
+            <!-- AI Generation Section -->
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>🤖 AI Board Generator</h3>
+              <textarea id="pecsPrompt" placeholder="Describe the PECS board you want to create... e.g., 'bathroom routine for toddler'" 
+                        style="width: 100%; height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #666; background: rgba(255,255,255,0.1); color: white; resize: vertical;"></textarea>
+              <div style="margin-top: 10px;">
+                <button class="action-btn" onclick="generatePECSBoard()" style="background: linear-gradient(135deg, #ff6b6b, #feca57); width: 100%;">✨ Generate Board</button>
+              </div>
+            </div>
+            
+            <!-- Board Settings -->
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>📐 Board Settings</h3>
+              <div style="margin-bottom: 10px;">
+                <label>Board Size:</label>
+                <select id="pecsBoardSize" onchange="updatePECSPreview()" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;">
+                  <option value="2x2">2×2 (4 tiles)</option>
+                  <option value="3x3" selected>3×3 (9 tiles)</option>
+                  <option value="4x3">4×3 (12 tiles)</option>
+                  <option value="4x4">4×4 (16 tiles)</option>
+                </select>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <label>Tile Size:</label>
+                <select id="pecsTileSize" onchange="updatePECSPreview()" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;">
+                  <option value="small">Small (2" × 2")</option>
+                  <option value="medium" selected>Medium (2.5" × 2.5")</option>
+                  <option value="large">Large (3" × 3")</option>
+                </select>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <label>Paper Size:</label>
+                <select id="pecsPaperSize" onchange="updatePECSPreview()" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;">
+                  <option value="letter" selected>Letter (8.5" × 11")</option>
+                  <option value="a4">A4</option>
+                  <option value="legal">Legal (8.5" × 14")</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="pecs-section">
+              <h3>🎯 Actions</h3>
+              <button class="action-btn" onclick="printPECSBoard()" style="background: linear-gradient(135deg, #00C851, #007E33); width: 100%; margin-bottom: 10px;">🖨️ Print Board</button>
+              <button class="action-btn" onclick="downloadPECSPDF()" style="background: linear-gradient(135deg, #ff4757, #c44569); width: 100%; margin-bottom: 10px;">📄 Download PDF</button>
+            </div>
+          </div>
+          
+          <!-- Right Panel: Preview -->
+          <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <h3>👀 Board Preview</h3>
+            <div id="pecsPreview" style="display: grid; gap: 10px; justify-content: center; grid-template-columns: repeat(3, 150px); margin-top: 20px;">
+              <!-- Preview tiles will be generated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Initialize the PECS generator with default tiles
+    window.currentPECSBoard = [
+      { emoji: '🚽', text: 'TOILET' },
+      { emoji: '🧼', text: 'WASH' },
+      { emoji: '🪥', text: 'BRUSH' },
+      { emoji: '🍎', text: 'EAT' },
+      { emoji: '💧', text: 'DRINK' },
+      { emoji: '😴', text: 'SLEEP' },
+      { emoji: '🎮', text: 'PLAY' },
+      { emoji: '📖', text: 'READ' },
+      { emoji: '👋', text: 'HELLO' }
+    ];
+    
+    // Add global functions exactly like HTML version
+    window.generatePECSBoard = function() {
+      const prompt = document.getElementById('pecsPrompt').value;
+      if (!prompt.trim()) {
+        alert('Please describe what kind of PECS board you want to create.');
+        return;
+      }
+      
+      // Generate smart tiles based on prompt (simplified version)
+      const words = prompt.toLowerCase().split(/\s+/);
+      const tiles = [];
+      
+      // Basic keyword mapping like HTML version
+      const keywordMap = {
+        bathroom: [{ emoji: '🚽', text: 'TOILET' }, { emoji: '🧼', text: 'WASH' }, { emoji: '🪥', text: 'BRUSH' }],
+        food: [{ emoji: '🍎', text: 'EAT' }, { emoji: '💧', text: 'DRINK' }, { emoji: '🍞', text: 'BREAD' }],
+        sleep: [{ emoji: '😴', text: 'SLEEP' }, { emoji: '🛏️', text: 'BED' }, { emoji: '🌙', text: 'NIGHT' }],
+        play: [{ emoji: '🎮', text: 'PLAY' }, { emoji: '⚽', text: 'BALL' }, { emoji: '🧸', text: 'TOY' }]
+      };
+      
+      // Find matching keywords
+      for (const [category, categoryTiles] of Object.entries(keywordMap)) {
+        if (words.some(word => word.includes(category) || category.includes(word))) {
+          tiles.push(...categoryTiles);
+        }
+      }
+      
+      // Fill with defaults if not enough tiles
+      const defaults = [
+        { emoji: '👋', text: 'HELLO' }, { emoji: '👍', text: 'YES' }, { emoji: '👎', text: 'NO' },
+        { emoji: '🆘', text: 'HELP' }, { emoji: '💕', text: 'LOVE' }, { emoji: '😊', text: 'HAPPY' }
+      ];
+      
+      while (tiles.length < 9) {
+        const randomDefault = defaults[Math.floor(Math.random() * defaults.length)];
+        if (!tiles.find(t => t.text === randomDefault.text)) {
+          tiles.push(randomDefault);
+        }
+      }
+      
+      window.currentPECSBoard = tiles.slice(0, 9);
+      updatePECSPreview();
+    };
+    
+    window.updatePECSPreview = function() {
+      const preview = document.getElementById('pecsPreview');
+      if (!preview || !window.currentPECSBoard) return;
+      
+      const boardSize = document.getElementById('pecsBoardSize')?.value || '3x3';
+      const [cols, rows] = boardSize.split('x').map(Number);
+      const maxTiles = cols * rows;
+      
+      preview.style.gridTemplateColumns = `repeat(${cols}, 150px)`;
+      preview.innerHTML = '';
+      
+      for (let i = 0; i < maxTiles; i++) {
+        const tile = window.currentPECSBoard[i] || { emoji: '📌', text: 'EMPTY' };
+        const tileEl = document.createElement('div');
+        tileEl.style.cssText = `
+          width: 150px; height: 150px; border: 2px solid #666; border-radius: 8px;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          background: rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s;
+        `;
+        tileEl.innerHTML = `
+          <div style="font-size: 48px; margin-bottom: 8px;">${tile.emoji}</div>
+          <div style="font-size: 12px; font-weight: bold; text-align: center; color: white;">${tile.text}</div>
+        `;
+        tileEl.onclick = () => editPECSTile(i);
+        preview.appendChild(tileEl);
+      }
+    };
+    
+    window.editPECSTile = function(index) {
+      const tile = window.currentPECSBoard[index] || { emoji: '📌', text: 'EMPTY' };
+      const newEmoji = prompt('Enter emoji:', tile.emoji) || tile.emoji;
+      const newText = prompt('Enter text:', tile.text) || tile.text;
+      window.currentPECSBoard[index] = { emoji: newEmoji, text: newText.toUpperCase() };
+      updatePECSPreview();
+    };
+    
+    window.printPECSBoard = function() {
+      const printWindow = window.open('', '_blank');
+      const boardSize = document.getElementById('pecsBoardSize')?.value || '3x3';
+      const tileSize = document.getElementById('pecsTileSize')?.value || 'medium';
+      const paperSize = document.getElementById('pecsPaperSize')?.value || 'letter';
+      
+      const [cols, rows] = boardSize.split('x').map(Number);
+      const maxTiles = cols * rows;
+      const tilesToPrint = window.currentPECSBoard.slice(0, maxTiles);
+      
+      // Fill empty slots
+      while (tilesToPrint.length < maxTiles) {
+        tilesToPrint.push({ emoji: '📌', text: 'EMPTY' });
+      }
+      
+      const tileSizeMap = {
+        small: { width: '2in', height: '2in', fontSize: '32px', textSize: '10px' },
+        medium: { width: '2.5in', height: '2.5in', fontSize: '36px', textSize: '12px' },
+        large: { width: '3in', height: '3in', fontSize: '40px', textSize: '14px' }
+      };
+      
+      const size = tileSizeMap[tileSize];
+      
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>PECS Board</title>
+          <style>
+            @page { size: ${paperSize}; margin: 0.5in; }
+            body { margin: 0; font-family: Arial, sans-serif; }
+            .board { display: grid; grid-template-columns: repeat(${cols}, ${size.width}); gap: 0.25in; justify-content: center; }
+            .tile { 
+              width: ${size.width}; height: ${size.height}; border: 2px solid #000; 
+              display: flex; flex-direction: column; align-items: center; justify-content: center;
+              page-break-inside: avoid; background: white;
+            }
+            .emoji { font-size: ${size.fontSize}; margin-bottom: 8px; }
+            .text { font-size: ${size.textSize}; font-weight: bold; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="board">
+            ${tilesToPrint.map(tile => `
+              <div class="tile">
+                <div class="emoji">${tile.emoji}</div>
+                <div class="text">${tile.text}</div>
+              </div>
+            `).join('')}
+          </div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.print();
+    };
+    
+    window.downloadPECSPDF = function() {
+      alert('📄 Save as PDF Instructions:\n\n' +
+            '1. In the print dialog, click "Destination"\n' +
+            '2. Select "Save as PDF"\n' +
+            '3. Click "Save"\n' +
+            '4. Choose where to save your PECS board\n\n' +
+            'Your PECS board will be saved with the correct paper size!');
+      printPECSBoard();
+    };
+    
+    updatePECSPreview();
+    setStatus('PECS Generator opened');
+  };
+
+  const showPECSTemplates = () => {
+    alert('PECS Templates - Coming Soon!\n\n' +
+      'Available templates:\n' +
+      '• Daily Schedule Cards\n' +
+      '• Choice Boards\n' +
+      '• First-Then Boards\n' +
+      '• Token Economy Boards\n' +
+      '• Communication Books'
+    );
+  };
+
+  const openQRCodeGenerator = () => {
+    setStatus('Opening QR Code Generator...');
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.style.zIndex = '10000';
+    
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 1000px; width: 95%; height: 90vh;">
+        <div class="modal-header">
+          <h2>📱 QR Code PECS Generator</h2>
+          <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+        </div>
+        
+        <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+          <!-- Left Panel: Settings -->
+          <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+            
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>⚙️ QR Settings</h3>
+              
+              <div style="margin-bottom: 15px;">
+                <label>QR Action:</label>
+                <select id="qrAction" onchange="updateQRPreview()" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;">
+                  <option value="speak">🔊 Text-to-Speech</option>
+                  <option value="custom">🔗 Custom URL</option>
+                  <option value="digital">💾 Digital Content</option>
+                </select>
+              </div>
+              
+              <div id="customUrlSection" style="margin-bottom: 15px; display: none;">
+                <label>Custom URL:</label>
+                <input type="text" id="customUrl" placeholder="https://example.com/{TEXT}" 
+                       style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;"/>
+                <small style="color: #888;">Use {TEXT} for tile text placeholder</small>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label>QR Size:</label>
+                <select id="qrSize" onchange="updateQRPreview()" style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666;">
+                  <option value="small">Small (1")</option>
+                  <option value="medium" selected>Medium (1.5")</option>
+                  <option value="large">Large (2")</option>
+                </select>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <label><input type="checkbox" id="includeText" checked onchange="updateQRPreview()"> Include Text Labels</label><br>
+                <label><input type="checkbox" id="includeSpeech" onchange="updateQRPreview()"> Include Speech Text</label>
+              </div>
+            </div>
+            
+            <div class="pecs-section">
+              <h3>🎯 Actions</h3>
+              <button class="action-btn" onclick="generateQRCodes()" style="background: linear-gradient(135deg, #00C851, #007E33); width: 100%; margin-bottom: 10px;">🖨️ Print QR Cards</button>
+              <button class="action-btn" onclick="exportQRData()" style="background: linear-gradient(135deg, #ff4757, #c44569); width: 100%;">📤 Export QR Data</button>
+            </div>
+          </div>
+          
+          <!-- Right Panel: Preview -->
+          <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <h3>👀 QR Preview</h3>
+            <div id="qrPreview" style="display: grid; gap: 20px; justify-content: center; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 20px;">
+              <!-- QR codes will be generated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add global functions for QR generation
+    window.updateQRPreview = function() {
+      const preview = document.getElementById('qrPreview');
+      const action = document.getElementById('qrAction').value;
+      const size = document.getElementById('qrSize').value;
+      const includeText = document.getElementById('includeText').checked;
+      const includeSpeech = document.getElementById('includeSpeech').checked;
+      const customUrlSection = document.getElementById('customUrlSection');
+      
+      // Show/hide custom URL section
+      customUrlSection.style.display = action === 'custom' ? 'block' : 'none';
+      
+      if (!window.currentPECSBoard) return;
+      
+      preview.innerHTML = '';
+      
+      window.currentPECSBoard.forEach((tile, index) => {
+        const qrContainer = document.createElement('div');
+        qrContainer.style.cssText = `
+          border: 1px solid #666; border-radius: 8px; padding: 15px;
+          background: rgba(255,255,255,0.05); text-align: center;
+        `;
+        
+        // Generate QR data based on action
+        let qrData = '';
+        switch(action) {
+          case 'speak':
+            qrData = 'https://tinkybink.com/speak?text=' + encodeURIComponent(tile.text);
+            break;
+          case 'custom':
+            const customUrl = document.getElementById('customUrl').value || 'https://example.com/{TEXT}';
+            qrData = customUrl.replace('{TEXT}', encodeURIComponent(tile.text));
+            break;
+          case 'digital':
+            qrData = 'https://tinkybink.com/tile/' + tile.text.toLowerCase().replace(/\s+/g, '-');
+            break;
+        }
+        
+        // Create QR code placeholder (in real implementation, use QR library)
+        const qrSize = size === 'small' ? '80px' : size === 'medium' ? '120px' : '160px';
+        
+        qrContainer.innerHTML = `
+          <div style="width: ${qrSize}; height: ${qrSize}; background: white; margin: 0 auto 10px; 
+                      display: flex; align-items: center; justify-content: center; border: 2px solid #000;">
+            <div style="font-size: 10px; color: #000; text-align: center;">QR<br>${tile.emoji}</div>
+          </div>
+          ${includeText ? `<div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">${tile.text}</div>` : ''}
+          ${includeSpeech ? `<div style="font-size: 12px; color: #888;">${tile.text}</div>` : ''}
+          <div style="font-size: 10px; color: #666; margin-top: 5px;">Action: ${action}</div>
+        `;
+        
+        preview.appendChild(qrContainer);
+      });
+    };
+    
+    window.generateQRCodes = function() {
+      const action = document.getElementById('qrAction').value;
+      const size = document.getElementById('qrSize').value;
+      const includeText = document.getElementById('includeText').checked;
+      const includeSpeech = document.getElementById('includeSpeech').checked;
+      
+      const printWindow = window.open('', '_blank');
+      const qrCards = window.currentPECSBoard.map((tile, index) => {
+        let qrData = '';
+        switch(action) {
+          case 'speak':
+            qrData = 'https://tinkybink.com/speak?text=' + encodeURIComponent(tile.text);
+            break;
+          case 'custom':
+            const customUrl = document.getElementById('customUrl').value || 'https://example.com/{TEXT}';
+            qrData = customUrl.replace('{TEXT}', encodeURIComponent(tile.text));
+            break;
+          case 'digital':
+            qrData = 'https://tinkybink.com/tile/' + tile.text.toLowerCase().replace(/\s+/g, '-');
+            break;
+        }
+        
+        const cardSize = size === 'small' ? '2in' : size === 'medium' ? '2.5in' : '3in';
+        const qrSize = size === 'small' ? '1in' : size === 'medium' ? '1.5in' : '2in';
+        
+        return `
+          <div class="qr-card" style="width: ${cardSize}; height: ${cardSize}; border: 2px solid #000; 
+                                   padding: 8px; display: inline-block; margin: 5px; text-align: center;
+                                   page-break-inside: avoid; background: white; color: black;">
+            <div style="width: ${qrSize}; height: ${qrSize}; background: #f0f0f0; margin: 0 auto 8px;
+                        display: flex; align-items: center; justify-content: center; border: 1px solid #000;">
+              <div style="font-size: 10px; text-align: center;">QR<br>${tile.emoji}</div>
+            </div>
+            ${includeText ? `<div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">${tile.text}</div>` : ''}
+            ${includeSpeech ? `<div style="font-size: 10px; color: #666;">${tile.text}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>QR Code PECS Cards</title>
+          <style>
+            @page { size: letter; margin: 0.5in; }
+            body { margin: 0; font-family: Arial, sans-serif; }
+            .header { text-align: center; margin-bottom: 20px; }
+            .qr-cards { text-align: center; }
+            .cutting-guide { margin-top: 20px; font-size: 12px; color: #666; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>QR Code PECS Cards</h1>
+            <p>Generated: ${new Date().toLocaleDateString()} | Action: ${action} | Size: ${size}</p>
+          </div>
+          <div class="qr-cards">${qrCards}</div>
+          <div class="cutting-guide">
+            <p>✂️ Cut along the black lines to separate cards</p>
+            <p>💡 For best results: Print on cardstock, laminate, and add velcro backing</p>
+          </div>
+        </body>
+        </html>
+      \`;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.print();
+      
+      alert('QR Code PECS cards sent to printer!\\n\\nNote: In production, this would generate real QR codes using a QR library.');
+    };
+    
+    window.exportQRData = function() {
+      const action = document.getElementById('qrAction').value;
+      const customUrl = document.getElementById('customUrl').value;
+      
+      const qrData = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        action: action,
+        customUrl: customUrl,
+        tiles: window.currentPECSBoard.map(tile => ({
+          emoji: tile.emoji,
+          text: tile.text,
+          qrUrl: action === 'speak' ? \`https://tinkybink.com/speak?text=${encodeURIComponent(tile.text)}\` :
+                 action === 'custom' ? (customUrl || 'https://example.com/{TEXT}').replace('{TEXT}', encodeURIComponent(tile.text)) :
+                 \`https://tinkybink.com/tile/${tile.text.toLowerCase().replace(/\\s+/g, '-')}\`
+        }))
+      };
+      
+      const blob = new Blob([JSON.stringify(qrData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = \`qr-pecs-data-${new Date().toISOString().split('T')[0]}.json\`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    
+    // Initialize
+    updateQRPreview();
+    setStatus('QR Code Generator opened');
+  };
+
+  const openBoardSync = () => {
+    alert('Board Sync - Coming Soon!\n\n' +
+      'Sync boards across:\n' +
+      '• Multiple devices\n' +
+      '• Different users\n' +
+      '• Home and school settings\n' +
+      '• Therapy sessions\n' +
+      '• Real-time updates'
+    );
+  };
+
+  const openStoryBuilder = () => {
+    setStatus('Opening Story Builder...');
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.style.zIndex = '10000';
+    
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+        <div class="modal-header">
+          <h2>📚 Story Builder</h2>
+          <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+        </div>
+        
+        <div style="display: flex; height: calc(100% - 80px); overflow: hidden;">
+          <!-- Left Panel: Settings -->
+          <div style="width: 300px; padding: 20px; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto;">
+            
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>📖 Story Type</h3>
+              <select id="storyType" onchange="updateStoryTemplate()" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666; border-radius: 4px;">
+                <option value="first-then">First/Then Sequence</option>
+                <option value="social">Social Story</option>
+                <option value="routine">Daily Routine</option>
+                <option value="choice">Choice Board</option>
+                <option value="emotion">Emotion Regulation</option>
+                <option value="custom">Custom Story</option>
+              </select>
+            </div>
+            
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>🎭 Templates</h3>
+              <select id="storyTemplate" onchange="loadStoryTemplate()" style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666; border-radius: 4px;">
+                <option value="">Select Template...</option>
+                <option value="morning">Morning Routine</option>
+                <option value="school">Going to School</option>
+                <option value="bedtime">Bedtime Routine</option>
+                <option value="doctor">Doctor Visit</option>
+                <option value="playground">Playground Rules</option>
+                <option value="mealtime">Mealtime Steps</option>
+              </select>
+            </div>
+            
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>⚙️ Story Settings</h3>
+              <div style="margin-bottom: 10px;">
+                <label>Title:</label>
+                <input type="text" id="storyTitle" placeholder="My Story" 
+                       style="width: 100%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666; border-radius: 4px;"/>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <label><input type="checkbox" id="includeAudio" onchange="updateStoryPreview()"> Include Audio Cues</label><br>
+                <label><input type="checkbox" id="includeEmoji" checked onchange="updateStoryPreview()"> Include Emojis</label><br>
+                <label><input type="checkbox" id="largeText" onchange="updateStoryPreview()"> Large Text</label>
+              </div>
+            </div>
+            
+            <div class="pecs-section" style="margin-bottom: 20px;">
+              <h3>➕ Add Step</h3>
+              <div style="margin-bottom: 10px;">
+                <input type="text" id="stepEmoji" placeholder="🌅" maxlength="2"
+                       style="width: 30%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666; border-radius: 4px;"/>
+                <input type="text" id="stepText" placeholder="Wake up"
+                       style="width: 65%; padding: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #666; border-radius: 4px; margin-left: 5%;"/>
+              </div>
+              <button class="action-btn" onclick="addStoryStep()" style="width: 100%; background: linear-gradient(135deg, #00C851, #007E33);">➕ Add Step</button>
+            </div>
+            
+            <div class="pecs-section">
+              <h3>🎯 Actions</h3>
+              <button class="action-btn" onclick="previewStory()" style="background: linear-gradient(135deg, #2196F3, #1976D2); width: 100%; margin-bottom: 10px;">👀 Preview Story</button>
+              <button class="action-btn" onclick="printStory()" style="background: linear-gradient(135deg, #FF9800, #F57C00); width: 100%; margin-bottom: 10px;">🖨️ Print Story</button>
+              <button class="action-btn" onclick="saveStoryTemplate()" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); width: 100%;">💾 Save Template</button>
+            </div>
+          </div>
+          
+          <!-- Right Panel: Story Builder -->
+          <div style="flex: 1; padding: 20px; overflow-y: auto;">
+            <h3>📝 Story Steps</h3>
+            <div id="storyBuilder" style="margin-top: 20px;">
+              <!-- Story steps will be generated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Initialize story data
+    window.currentStory = {
+      title: 'My Story',
+      type: 'first-then',
+      steps: [
+        { label: 'FIRST', emoji: '1️⃣', text: 'First, I will...' },
+        { label: 'THEN', emoji: '2️⃣', text: 'Then, I will...' }
+      ]
+    };
+    
+    // Add global functions for story building
+    window.updateStoryTemplate = function() {
+      const type = document.getElementById('storyType').value;
+      const story = window.currentStory;
+      
+      switch(type) {
+        case 'first-then':
+          story.steps = [
+            { label: 'FIRST', emoji: '1️⃣', text: 'First, I will...' },
+            { label: 'THEN', emoji: '2️⃣', text: 'Then, I will...' }
+          ];
+          break;
+        case 'social':
+          story.steps = [
+            { label: 'SITUATION', emoji: '🏫', text: 'When I am at...' },
+            { label: 'FEELING', emoji: '😊', text: 'I might feel...' },
+            { label: 'ACTION', emoji: '👍', text: 'I can...' }
+          ];
+          break;
+        case 'routine':
+          story.steps = [
+            { label: 'STEP 1', emoji: '🌅', text: 'Wake up' },
+            { label: 'STEP 2', emoji: '🪥', text: 'Brush teeth' },
+            { label: 'STEP 3', emoji: '👕', text: 'Get dressed' }
+          ];
+          break;
+        case 'choice':
+          story.steps = [
+            { label: 'CHOICE A', emoji: '🅰️', text: 'Option A' },
+            { label: 'CHOICE B', emoji: '🅱️', text: 'Option B' }
+          ];
+          break;
+        case 'emotion':
+          story.steps = [
+            { label: 'FEELING', emoji: '😰', text: 'When I feel upset...' },
+            { label: 'STRATEGY', emoji: '🧘', text: 'I can take deep breaths' },
+            { label: 'RESULT', emoji: '😌', text: 'Then I feel better' }
+          ];
+          break;
+        case 'custom':
+          story.steps = [
+            { label: 'STEP 1', emoji: '📝', text: 'Add your own steps...' }
+          ];
+          break;
+      }
+      
+      renderStorySteps();
+    };
+    
+    window.loadStoryTemplate = function() {
+      const template = document.getElementById('storyTemplate').value;
+      const story = window.currentStory;
+      
+      const templates = {
+        morning: {
+          title: 'My Morning Routine',
+          steps: [
+            { label: 'FIRST', emoji: '🌅', text: 'Wake up and stretch' },
+            { label: 'THEN', emoji: '🪥', text: 'Brush my teeth' },
+            { label: 'NEXT', emoji: '🚿', text: 'Take a shower' },
+            { label: 'NEXT', emoji: '👕', text: 'Get dressed' },
+            { label: 'FINALLY', emoji: '🍳', text: 'Eat breakfast' }
+          ]
+        },
+        school: {
+          title: 'Going to School',
+          steps: [
+            { label: 'FIRST', emoji: '🎒', text: 'Pack my backpack' },
+            { label: 'THEN', emoji: '🚌', text: 'Ride the bus' },
+            { label: 'NEXT', emoji: '🏫', text: 'Arrive at school' },
+            { label: 'FINALLY', emoji: '📚', text: 'Start learning' }
+          ]
+        },
+        bedtime: {
+          title: 'Bedtime Routine',
+          steps: [
+            { label: 'FIRST', emoji: '🧸', text: 'Put away toys' },
+            { label: 'THEN', emoji: '🛁', text: 'Take a bath' },
+            { label: 'NEXT', emoji: '👘', text: 'Put on pajamas' },
+            { label: 'NEXT', emoji: '📖', text: 'Read a story' },
+            { label: 'FINALLY', emoji: '😴', text: 'Go to sleep' }
+          ]
+        },
+        doctor: {
+          title: 'Visit to the Doctor',
+          steps: [
+            { label: 'FIRST', emoji: '🏥', text: 'Go to the doctors office' },
+            { label: 'THEN', emoji: '⏰', text: 'Wait for my turn' },
+            { label: 'NEXT', emoji: '👨‍⚕️', text: 'Talk to the doctor' },
+            { label: 'FINALLY', emoji: '🏠', text: 'Go home' }
+          ]
+        },
+        playground: {
+          title: 'Playground Rules',
+          steps: [
+            { label: 'RULE 1', emoji: '👫', text: 'Be kind to friends' },
+            { label: 'RULE 2', emoji: '📢', text: 'Use inside voice' },
+            { label: 'RULE 3', emoji: '🤝', text: 'Take turns' },
+            { label: 'RULE 4', emoji: '🆘', text: 'Ask for help if needed' }
+          ]
+        },
+        mealtime: {
+          title: 'Mealtime Steps',
+          steps: [
+            { label: 'FIRST', emoji: '🧼', text: 'Wash my hands' },
+            { label: 'THEN', emoji: '🪑', text: 'Sit at the table' },
+            { label: 'NEXT', emoji: '🍽️', text: 'Eat my food' },
+            { label: 'FINALLY', emoji: '🧽', text: 'Clean up' }
+          ]
+        }
+      };
+      
+      if (templates[template]) {
+        story.title = templates[template].title;
+        story.steps = [...templates[template].steps];
+        document.getElementById('storyTitle').value = story.title;
+        renderStorySteps();
+      }
+    };
+    
+    window.renderStorySteps = function() {
+      const builder = document.getElementById('storyBuilder');
+      const story = window.currentStory;
+      const includeEmoji = document.getElementById('includeEmoji')?.checked ?? true;
+      const largeText = document.getElementById('largeText')?.checked ?? false;
+      
+      builder.innerHTML = story.steps.map((step, index) => \`
+        <div class="story-step" style="
+          display: flex; align-items: center; margin-bottom: 15px; padding: 15px;
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px; min-height: 80px;
+        ">
+          <div style="
+            width: 60px; height: 60px; background: linear-gradient(135deg, #7b3ff2, #9c5eff);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: ${largeText ? '24px' : '20px'}; margin-right: 15px;
+          ">
+            ${includeEmoji ? step.emoji : (index + 1)}
+          </div>
+          <div style="flex: 1;">
+            <div style="
+              font-weight: bold; color: #7b3ff2; font-size: 12px; 
+              text-transform: uppercase; margin-bottom: 5px;
+            ">
+              ${step.label}
+            </div>
+            <div style="
+              color: white; font-size: ${largeText ? '18px' : '16px'}; 
+              line-height: 1.4;
+            " 
+              contenteditable="true" 
+              onblur="updateStoryStep(${index}, this.textContent)"
+            >
+              ${step.text}
+            </div>
+          </div>
+          <button onclick="removeStoryStep(${index})" style="
+            background: #e74c3c; color: white; border: none; border-radius: 4px;
+            width: 30px; height: 30px; cursor: pointer; margin-left: 10px;
+          ">✕</button>
+        </div>
+      \`).join('');
+    };
+    
+    window.addStoryStep = function() {
+      const emoji = document.getElementById('stepEmoji').value || '➡️';
+      const text = document.getElementById('stepText').value || 'New step';
+      const story = window.currentStory;
+      
+      story.steps.push({
+        label: \`STEP ${story.steps.length + 1}\`,
+        emoji: emoji,
+        text: text
+      });
+      
+      document.getElementById('stepEmoji').value = '';
+      document.getElementById('stepText').value = '';
+      renderStorySteps();
+    };
+    
+    window.removeStoryStep = function(index) {
+      if (window.currentStory.steps.length > 1) {
+        window.currentStory.steps.splice(index, 1);
+        renderStorySteps();
+      }
+    };
+    
+    window.updateStoryStep = function(index, newText) {
+      window.currentStory.steps[index].text = newText;
+    };
+    
+    window.previewStory = function() {
+      const story = window.currentStory;
+      const title = document.getElementById('storyTitle').value || story.title;
+      const includeAudio = document.getElementById('includeAudio').checked;
+      
+      const previewWindow = window.open('', '_blank', 'width=800,height=600');
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .story-title { text-align: center; color: #7b3ff2; margin-bottom: 30px; }
+            .story-step { display: flex; align-items: center; margin-bottom: 20px; padding: 15px; 
+                         background: #f8f9fa; border-radius: 10px; }
+            .step-icon { width: 50px; height: 50px; background: #7b3ff2; color: white; 
+                        border-radius: 50%; display: flex; align-items: center; 
+                        justify-content: center; font-size: 20px; margin-right: 15px; }
+            .step-content { flex: 1; }
+            .step-label { font-weight: bold; color: #7b3ff2; font-size: 12px; 
+                         text-transform: uppercase; margin-bottom: 5px; }
+            .step-text { font-size: 16px; line-height: 1.4; }
+          </style>
+        </head>
+        <body>
+          <h1 class="story-title">${title}</h1>
+          ${story.steps.map((step, index) => \`
+            <div class="story-step">
+              <div class="step-icon">${step.emoji}</div>
+              <div class="step-content">
+                <div class="step-label">${step.label}</div>
+                <div class="step-text">${step.text}</div>
+              </div>
+              ${includeAudio ? \`<button onclick="speechSynthesis.speak(new SpeechSynthesisUtterance('${step.text}'))">🔊</button>\` : ''}
+            </div>
+          \`).join('')}
+        </body>
+        </html>
+      \`;
+      
+      previewWindow.document.write(html);
+      previewWindow.document.close();
+    };
+    
+    window.printStory = function() {
+      const story = window.currentStory;
+      const title = document.getElementById('storyTitle').value || story.title;
+      const largeText = document.getElementById('largeText').checked;
+      
+      const printWindow = window.open('', '_blank');
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            @page { size: letter; margin: 0.75in; }
+            body { font-family: Arial, sans-serif; margin: 0; }
+            .story-title { text-align: center; font-size: ${largeText ? '32px' : '24px'}; 
+                          color: #333; margin-bottom: 30px; page-break-after: avoid; }
+            .story-step { display: flex; align-items: center; margin-bottom: 25px; 
+                         padding: 15px; border: 2px solid #7b3ff2; border-radius: 10px;
+                         page-break-inside: avoid; }
+            .step-icon { width: ${largeText ? '70px' : '60px'}; height: ${largeText ? '70px' : '60px'}; 
+                        background: #7b3ff2; color: white; border-radius: 50%; 
+                        display: flex; align-items: center; justify-content: center; 
+                        font-size: ${largeText ? '32px' : '24px'}; margin-right: 20px; 
+                        flex-shrink: 0; }
+            .step-content { flex: 1; }
+            .step-label { font-weight: bold; color: #7b3ff2; 
+                         font-size: ${largeText ? '16px' : '14px'}; 
+                         text-transform: uppercase; margin-bottom: 8px; }
+            .step-text { font-size: ${largeText ? '22px' : '18px'}; 
+                        line-height: 1.4; color: #333; }
+            .print-info { text-align: center; font-size: 12px; color: #666; 
+                         margin-top: 30px; border-top: 1px solid #ddd; padding-top: 15px; }
+          </style>
+        </head>
+        <body>
+          <h1 class="story-title">${title}</h1>
+          ${story.steps.map(step => \`
+            <div class="story-step">
+              <div class="step-icon">${step.emoji}</div>
+              <div class="step-content">
+                <div class="step-label">${step.label}</div>
+                <div class="step-text">${step.text}</div>
+              </div>
+            </div>
+          \`).join('')}
+          <div class="print-info">
+            Created with TinkyBink Story Builder | ${new Date().toLocaleDateString()}
+          </div>
+        </body>
+        </html>
+      \`;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.print();
+    };
+    
+    window.saveStoryTemplate = function() {
+      const story = window.currentStory;
+      const title = document.getElementById('storyTitle').value || story.title;
+      
+      const template = {
+        name: title,
+        type: document.getElementById('storyType').value,
+        steps: [...story.steps],
+        created: new Date().toISOString()
+      };
+      
+      // Save to localStorage
+      const savedTemplates = JSON.parse(localStorage.getItem('storyTemplates') || '[]');
+      savedTemplates.push(template);
+      localStorage.setItem('storyTemplates', JSON.stringify(savedTemplates));
+      
+      alert(\`Story template "${title}" saved successfully!\`);
+    };
+    
+    // Initialize
+    updateStoryTemplate();
+    renderStorySteps();
+    setStatus('Story Builder opened');
+  };
+
+  const openVelcroGuides = () => {
+    alert('Velcro Guides - Coming Soon!\n\n' +
+      'Printable guides for:\n' +
+      '• Optimal velcro placement\n' +
+      '• Card organization systems\n' +
+      '• Binder layouts\n' +
+      '• Travel book designs\n' +
+      '• Maintenance tips'
+    );
+  };
+
+  return (
+    <>
+      <div className="settings-section">
+        <h3>🖨️ PECS Printout Generator</h3>
+        <div className="action-buttons">
+          <button 
+            className="action-btn" 
+            onClick={openPECSGenerator}
+            style={{ background: 'linear-gradient(135deg, #ff6b6b, #feca57)', color: 'white' }}
+          >
+            📋 Create Printable PECS
+          </button>
+          <button className="action-btn secondary" onClick={showPECSTemplates}>
+            📄 View Templates
+          </button>
+        </div>
+      </div>
+      
+      <div className="settings-section">
+        <h3>🚀 Advanced PECS Features</h3>
+        <div className="action-buttons">
+          <button 
+            className="action-btn" 
+            onClick={openQRCodeGenerator}
+            style={{ background: 'linear-gradient(135deg, #00b894, #00cec9)' }}
+          >
+            <span style={{ fontSize: '16px' }}>📱</span> QR Code PECS
+          </button>
+          <button 
+            className="action-btn" 
+            onClick={openBoardSync}
+            style={{ background: 'linear-gradient(135deg, #6c5ce7, #a29bfe)' }}
+          >
+            <span style={{ fontSize: '16px' }}>🔄</span> Board Sync
+          </button>
+          <button 
+            className="action-btn" 
+            onClick={openStoryBuilder}
+            style={{ background: 'linear-gradient(135deg, #fdcb6e, #e17055)' }}
+          >
+            <span style={{ fontSize: '16px' }}>📚</span> Story Builder
+          </button>
+          <button 
+            className="action-btn" 
+            onClick={openVelcroGuides}
+            style={{ background: 'linear-gradient(135deg, #74b9ff, #0984e3)' }}
+          >
+            <span style={{ fontSize: '16px' }}>✂️</span> Velcro Guides
+          </button>
+        </div>
+      </div>
+      
+      {status && (
+        <div style={{ marginTop: '10px', fontSize: '12px', color: '#888' }}>
+          {status}
+        </div>
+      )}
+    </>
+  );
+}

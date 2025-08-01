@@ -3,6 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/app-store';
 import { getLanguageService, getVoiceRecognitionService, getEducationalGamesService, getMemoryTrainingService, getSkillAssessmentService } from '@/modules/module-system';
+import { AccountCloudSection } from '@/components/settings/sections/AccountCloudSection';
+import { LocationContextSection } from '@/components/settings/sections/LocationContextSection';
+import { DataManagementSection } from '@/components/settings/sections/DataManagementSection';
+import { AnalyticsSection } from '@/components/settings/sections/AnalyticsSection';
+import { LearningGamesSection } from '@/components/settings/sections/LearningGamesSection';
+import { PECSFeaturesSection } from '@/components/settings/sections/PECSFeaturesSection';
+import { BillingSection } from '@/components/settings/sections/BillingSection';
+import { ProductionManagementSection } from '@/components/settings/sections/ProductionManagementSection';
+import { AccessibilitySection } from '@/components/settings/sections/AccessibilitySection';
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -247,98 +256,33 @@ export function SettingsPanel() {
             onChange={(e) => updateSettings({ tileScale: parseFloat(e.target.value) })}
           />
         </div>
-      </div>
-
-      <div className="settings-section">
-        <h3>📊 Analytics & Professional Reports</h3>
-        <div className="action-buttons">
-          <button className="action-btn">📈 View Usage Stats</button>
-          <button className="action-btn professional">
-            <span className="btn-icon">🏥</span>
-            <span className="btn-text">Professional Reports</span>
-          </button>
-          <button className="action-btn secondary">📥 Export Analytics</button>
+        <div className="setting-item">
+          <label>
+            Text Size: <span className="setting-value">1.0</span>
+          </label>
+          <input
+            type="range"
+            min="0.8"
+            max="1.5"
+            step="0.1"
+            value={1.0}
+            onChange={(e) => {
+              // TODO: Implement text size adjustment
+              console.log('Text size:', e.target.value);
+            }}
+          />
         </div>
       </div>
 
-      <div className="settings-section">
-        <h3>📁 Data Management</h3>
-        <div className="action-buttons">
-          <button className="action-btn secondary">📥 Export Boards</button>
-          <button className="action-btn secondary">📤 Import Boards</button>
-          <button className="action-btn secondary">➕ Create New Board</button>
-          <button className="action-btn secondary">🔄 Reset Settings</button>
-        </div>
-      </div>
-
-      <div className="settings-section">
-        <h3>🎮 Learning Games & Activities</h3>
-        <div className="action-buttons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #e17055, #fdcb6e)' }}
-            onClick={() => startGame('whichOne')}
-          >
-            🧩 Which One Doesn't Belong?
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #00b894, #00cec9)' }}
-            onClick={() => startGame('matchSame')}
-          >
-            🎯 Match the Same
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #ffeaa7, #fab1a0)' }}
-            onClick={() => startGame('makeSandwich')}
-          >
-            🥪 Make a Sandwich
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #ff7675, #fd79a8)' }}
-            onClick={() => startGame('pickColor')}
-          >
-            🎨 Pick the Color
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #81ecec, #74b9ff)' }}
-            onClick={() => startGame('putAway')}
-          >
-            📦 Put Away Items
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #55a3ff, #6c5ce7)' }}
-            onClick={() => startGame('yesNo')}
-          >
-            ❓ Yes or No Game
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #fdcb6e, #e17055)' }}
-            onClick={() => startGame('soundMatch')}
-          >
-            🔊 Sound Matching
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #fab1a0, #ff7675)' }}
-            onClick={() => startGame('whatsMissing')}
-          >
-            🔍 What's Missing?
-          </button>
-          <button 
-            className="action-btn" 
-            style={{ background: 'linear-gradient(135deg, #00b894, #55a3ff)' }}
-            onClick={() => startGame('routineBuilder')}
-          >
-            📅 Daily Routine Builder
-          </button>
-        </div>
-      </div>
+      <AccountCloudSection />
+      <AnalyticsSection />
+      <LocationContextSection />
+      <DataManagementSection />
+      <LearningGamesSection />
+      <PECSFeaturesSection />
+      <BillingSection />
+      <ProductionManagementSection />
+      <AccessibilitySection />
     </div>
   </>
   );

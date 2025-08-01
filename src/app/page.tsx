@@ -10,6 +10,7 @@ import { SettingsPanel } from '@/components/layouts/SettingsPanel';
 import { DevTools } from '@/components/DevTools';
 import { ElizaChat } from '@/components/modules/ElizaChat';
 import { HealthcareDashboard } from '@/components/healthcare/HealthcareDashboard';
+import { BillingDashboard } from '@/components/healthcare/BillingDashboard';
 import { GameModal } from '@/components/modals/GameModal';
 import { useAppStore } from '@/store/app-store';
 import { useEffect, useState } from 'react';
@@ -46,6 +47,27 @@ export default function HomePage() {
         <StarBackground />
         <div className="min-h-screen relative">
           <HealthcareDashboard onClose={() => setCurrentView('tiles')} />
+        </div>
+      </>
+    );
+  }
+
+  // When Billing is open, show only Billing with its own header
+  if (currentView === 'billing') {
+    return (
+      <>
+        <StarBackground />
+        <div className="min-h-screen relative">
+          <div className="header-alt">
+            <button 
+              onClick={() => setCurrentView('tiles')}
+              className="back-btn"
+            >
+              ← Back to TinkyBink
+            </button>
+            <h1>Billing Dashboard</h1>
+          </div>
+          <BillingDashboard />
         </div>
       </>
     );

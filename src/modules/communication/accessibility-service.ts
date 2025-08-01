@@ -17,6 +17,14 @@ export interface AccessibilitySettings {
   colorBlindMode: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
   textSpacing: 'normal' | 'increased' | 'maximum';
   cursorSize: 'normal' | 'large' | 'extra-large';
+  switchScanning: boolean;
+  scanSpeed: number; // milliseconds between scans
+  scanMode: 'auto' | 'manual' | 'step';
+  scanMethod: 'linear' | 'group' | 'row-column';
+  switchAction1: 'select' | 'scan' | 'speak';
+  switchAction2: 'select' | 'scan' | 'speak';
+  dwellTime: number; // milliseconds to hover before selection
+  dwellSelect: boolean;
 }
 
 export interface KeyboardShortcut {
@@ -43,7 +51,15 @@ export class AccessibilityService {
     focusIndicators: true,
     colorBlindMode: 'none',
     textSpacing: 'normal',
-    cursorSize: 'normal'
+    cursorSize: 'normal',
+    switchScanning: false,
+    scanSpeed: 1500,
+    scanMode: 'auto',
+    scanMethod: 'linear',
+    switchAction1: 'select',
+    switchAction2: 'scan',
+    dwellTime: 1000,
+    dwellSelect: false
   };
   
   private shortcuts: KeyboardShortcut[] = [
@@ -61,6 +77,16 @@ export class AccessibilityService {
   
   private focusedElement: HTMLElement | null = null;
   private focusTrap: HTMLElement | null = null;
+  
+  // Switch scanning properties
+  private scanTimer: NodeJS.Timeout | null = null;
+  private currentScanIndex: number = 0;
+  private scanElements: HTMLElement[] = [];
+  private isScanning: boolean = false;
+  private scanGroups: HTMLElement[][] = [];
+  private currentGroupIndex: number = 0;
+  private dwellTimer: NodeJS.Timeout | null = null;
+  private switchListeners: { [key: string]: () => void } = {};
 
   private constructor() {
     console.log('AccessibilityService created');
@@ -93,6 +119,9 @@ export class AccessibilityService {
     
     // Monitor system preferences
     this.monitorSystemPreferences();
+    
+    // Setup switch scanning
+    this.setupSwitchScanning();
     
     console.log('AccessibilityService initialized');
   }
@@ -182,6 +211,68 @@ export class AccessibilityService {
     this.focusTrap = null;
   }
 
+  // Switch scanning methods
+  startSwitchScanning(): void {
+    if (!this.settings.switchScanning || this.isScanning) return;
+    
+    this.updateScanElements();
+    if (this.scanElements.length === 0) return;
+    
+    this.isScanning = true;
+    this.currentScanIndex = 0;
+    this.currentGroupIndex = 0;
+    
+    if (this.settings.scanMethod === 'group' || this.settings.scanMethod === 'row-column') {
+      this.setupScanGroups();
+    }
+    
+    if (this.settings.scanMode === 'auto') {
+      this.startAutoScan();
+    }
+    
+    this.highlightCurrentElement();
+    this.announce('Switch scanning started');
+    this.analytics?.track('switch_scanning_started', { 
+      method: this.settings.scanMethod,
+      mode: this.settings.scanMode 
+    });
+  }
+  
+  stopSwitchScanning(): void {
+    if (!this.isScanning) return;
+    
+    this.isScanning = false;
+    if (this.scanTimer) {
+      clearTimeout(this.scanTimer);
+      this.scanTimer = null;
+    }
+    
+    this.clearHighlights();
+    this.announce('Switch scanning stopped');
+    this.analytics?.track('switch_scanning_stopped');
+  }
+  
+  triggerSwitch(switchNumber: 1 | 2): void {
+    if (!this.settings.switchScanning) return;
+    
+    const action = switchNumber === 1 ? this.settings.switchAction1 : this.settings.switchAction2;
+    
+    switch (action) {
+      case 'select':
+        this.selectCurrentElement();
+        break;
+      case 'scan':
+        this.advanceScan();
+        break;
+      case 'speak':
+        this.speakCurrentElement();
+        break;
+    }
+    
+    this.haptic?.vibrate(50); // Haptic feedback for switch activation
+    this.analytics?.track('switch_triggered', { switchNumber, action });
+  }
+  
   // Navigate tiles with keyboard
   navigateToTile(direction: 'next' | 'previous' | 'up' | 'down'): void {
     const tiles = this.getFocusableTiles();
@@ -311,6 +402,14 @@ export class AccessibilityService {
         root.classList.remove('large-cursor', 'extra-large-cursor');
         if (value === 'large') root.classList.add('large-cursor');
         if (value === 'extra-large') root.classList.add('extra-large-cursor');
+        break;
+        
+      case 'switchScanning':
+        if (value) {
+          this.startSwitchScanning();
+        } else {
+          this.stopSwitchScanning();
+        }
         break;
     }
   }
@@ -512,6 +611,234 @@ export class AccessibilityService {
         console.error('Failed to load custom shortcuts:', error);
       }
     }
+  }
+
+  // Switch scanning private methods
+  private setupSwitchScanning(): void {
+    // Setup switch input listeners
+    this.setupSwitchInputs();
+    
+    // Setup dwell selection
+    if (this.settings.dwellSelect) {
+      this.setupDwellSelection();
+    }
+  }
+
+  private setupSwitchInputs(): void {
+    // Listen for space bar and enter as default switches
+    const spaceListener = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        this.triggerSwitch(1);
+      }
+    };
+    
+    const enterListener = (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        e.preventDefault();
+        this.triggerSwitch(2);
+      }
+    };
+    
+    document.addEventListener('keydown', spaceListener);
+    document.addEventListener('keydown', enterListener);
+    
+    this.switchListeners['space'] = () => document.removeEventListener('keydown', spaceListener);
+    this.switchListeners['enter'] = () => document.removeEventListener('keydown', enterListener);
+    
+    // Listen for external switch inputs (via USB/Bluetooth)
+    this.setupExternalSwitches();
+  }
+
+  private setupExternalSwitches(): void {
+    // Listen for gamepad/joystick inputs (many switches appear as gamepads)
+    window.addEventListener('gamepadconnected', (e) => {
+      this.announce('Switch device connected');
+      this.analytics?.track('switch_device_connected', { id: e.gamepad.id });
+    });
+    
+    // Poll for gamepad button presses
+    const pollGamepads = () => {
+      const gamepads = navigator.getGamepads();
+      for (let i = 0; i < gamepads.length; i++) {
+        const gamepad = gamepads[i];
+        if (gamepad) {
+          // Check button presses
+          for (let j = 0; j < gamepad.buttons.length; j++) {
+            if (gamepad.buttons[j].pressed) {
+              this.triggerSwitch(j % 2 === 0 ? 1 : 2);
+              break;
+            }
+          }
+        }
+      }
+      
+      if (this.settings.switchScanning) {
+        requestAnimationFrame(pollGamepads);
+      }
+    };
+    
+    if (this.settings.switchScanning) {
+      requestAnimationFrame(pollGamepads);
+    }
+  }
+
+  private setupDwellSelection(): void {
+    let lastHoverElement: HTMLElement | null = null;
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!this.settings.dwellSelect) return;
+      
+      const element = e.target as HTMLElement;
+      if (element.classList.contains('tile')) {
+        if (element !== lastHoverElement) {
+          // Clear previous dwell timer
+          if (this.dwellTimer) {
+            clearTimeout(this.dwellTimer);
+          }
+          
+          lastHoverElement = element;
+          
+          // Start new dwell timer
+          this.dwellTimer = setTimeout(() => {
+            element.click();
+            this.announce('Tile selected by dwell');
+          }, this.settings.dwellTime);
+        }
+      } else {
+        // Clear dwell timer when not hovering over tile
+        if (this.dwellTimer) {
+          clearTimeout(this.dwellTimer);
+          this.dwellTimer = null;
+        }
+        lastHoverElement = null;
+      }
+    });
+  }
+
+  private updateScanElements(): void {
+    this.scanElements = Array.from(this.getFocusableTiles()) as HTMLElement[];
+  }
+
+  private setupScanGroups(): void {
+    this.scanGroups = [];
+    
+    if (this.settings.scanMethod === 'row-column') {
+      // Group by rows
+      const columns = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-columns') || '3');
+      for (let i = 0; i < this.scanElements.length; i += columns) {
+        this.scanGroups.push(this.scanElements.slice(i, i + columns));
+      }
+    } else if (this.settings.scanMethod === 'group') {
+      // Group by logical sections (every 4-6 tiles)
+      const groupSize = 4;
+      for (let i = 0; i < this.scanElements.length; i += groupSize) {
+        this.scanGroups.push(this.scanElements.slice(i, i + groupSize));
+      }
+    }
+  }
+
+  private startAutoScan(): void {
+    if (this.scanTimer) {
+      clearTimeout(this.scanTimer);
+    }
+    
+    this.scanTimer = setTimeout(() => {
+      this.advanceScan();
+      if (this.isScanning && this.settings.scanMode === 'auto') {
+        this.startAutoScan();
+      }
+    }, this.settings.scanSpeed);
+  }
+
+  private advanceScan(): void {
+    if (!this.isScanning) return;
+    
+    this.clearHighlights();
+    
+    if (this.settings.scanMethod === 'linear') {
+      this.currentScanIndex = (this.currentScanIndex + 1) % this.scanElements.length;
+    } else if (this.settings.scanMethod === 'group' || this.settings.scanMethod === 'row-column') {
+      if (this.currentGroupIndex < this.scanGroups.length) {
+        this.currentGroupIndex = (this.currentGroupIndex + 1) % this.scanGroups.length;
+      }
+    }
+    
+    this.highlightCurrentElement();
+  }
+
+  private highlightCurrentElement(): void {
+    this.clearHighlights();
+    
+    if (this.settings.scanMethod === 'linear') {
+      const element = this.scanElements[this.currentScanIndex];
+      if (element) {
+        element.classList.add('switch-scan-highlight');
+        this.announceCurrentElement(element);
+      }
+    } else if (this.settings.scanMethod === 'group' || this.settings.scanMethod === 'row-column') {
+      const group = this.scanGroups[this.currentGroupIndex];
+      if (group) {
+        group.forEach(element => element.classList.add('switch-scan-highlight'));
+        this.announce(`Group ${this.currentGroupIndex + 1} of ${this.scanGroups.length}`);
+      }
+    }
+  }
+
+  private clearHighlights(): void {
+    document.querySelectorAll('.switch-scan-highlight').forEach(el => {
+      el.classList.remove('switch-scan-highlight');
+    });
+  }
+
+  private selectCurrentElement(): void {
+    if (this.settings.scanMethod === 'linear') {
+      const element = this.scanElements[this.currentScanIndex];
+      if (element) {
+        element.click();
+        this.announce('Tile selected');
+      }
+    } else if (this.settings.scanMethod === 'group' || this.settings.scanMethod === 'row-column') {
+      // If in group mode, switch to linear scan within the group
+      const group = this.scanGroups[this.currentGroupIndex];
+      if (group) {
+        this.scanElements = group;
+        this.currentScanIndex = 0;
+        this.highlightCurrentElement();
+        // Switch to linear mode temporarily
+        const originalMethod = this.settings.scanMethod;
+        this.settings.scanMethod = 'linear';
+        
+        // After selection, restore original method
+        setTimeout(() => {
+          this.settings.scanMethod = originalMethod;
+          this.updateScanElements();
+          this.setupScanGroups();
+        }, 100);
+      }
+    }
+  }
+
+  private speakCurrentElement(): void {
+    if (this.settings.scanMethod === 'linear') {
+      const element = this.scanElements[this.currentScanIndex];
+      if (element) {
+        const text = element.textContent || 'No text';
+        this.speech?.speak(text);
+      }
+    } else if (this.settings.scanMethod === 'group' || this.settings.scanMethod === 'row-column') {
+      const group = this.scanGroups[this.currentGroupIndex];
+      if (group) {
+        const texts = group.map(el => el.textContent || '').join(', ');
+        this.speech?.speak(`Group contains: ${texts}`);
+      }
+    }
+  }
+
+  private announceCurrentElement(element: HTMLElement): void {
+    const emoji = element.querySelector('.emoji')?.textContent || '';
+    const text = element.querySelector('.text')?.textContent || element.textContent || '';
+    this.announce(`${text} ${emoji}`);
   }
 }
 

@@ -23,6 +23,32 @@ import { EducationalGamesService, getEducationalGamesService } from './learning/
 import { MemoryTrainingService, getMemoryTrainingService } from './learning/memory-training-service';
 import { SkillAssessmentService, getSkillAssessmentService } from './learning/skill-assessment-service';
 import { getGameTrackingService } from '@/services/game-tracking';
+import { CollaborationService, getCollaborationService } from './collaboration/collaboration-service';
+import { MultiUserService, getMultiUserService } from './collaboration/multi-user-service';
+import { SessionRecordingService, getSessionRecordingService } from './collaboration/session-recording-service';
+import { RemoteAssistanceService, getRemoteAssistanceService } from './collaboration/remote-assistance-service';
+import { SharedBoardsService, getSharedBoardsService } from './collaboration/shared-boards-service';
+import { SmartDefaultsService, getSmartDefaultsService } from './communication/smart-defaults-service';
+import { WelcomeService, getWelcomeService } from './communication/welcome-service';
+import { NavigationService, getNavigationService } from './communication/navigation-service';
+import { BottomNavService, getBottomNavService } from './communication/bottom-nav-service';
+import { AccountService, getAccountService } from './communication/account-service';
+// Customization Phase (36-40)
+import { AuthService, getAuthService } from './customization/auth-service';
+import { QuickCreateService, getQuickCreateService } from './customization/quick-create-service';
+import { BoardSharingService, getBoardSharingService } from './customization/board-sharing-service';
+import { BoardCreationService, getBoardCreationService } from './customization/board-creation-service';
+import { TileOrganizationService, getTileOrganizationService } from './customization/tile-organization-service';
+// AI & Integration Phase (41-42)
+import { VisualHintsService, getVisualHintsService } from './ai/visual-hints-service';
+import { ServiceAdapter, getServiceAdapter } from './integration/service-adapter';
+// Enterprise Phase (46-47)
+import { AuditService, getAuditService } from './enterprise/audit-service';
+import { ComplianceService, getComplianceService } from './enterprise/compliance-service';
+// Advanced Phase (48-50)
+import { ActionSequenceService, getActionSequenceService } from './advanced/action-sequence-service';
+import { BackupService, getBackupService } from './data/backup-service';
+import { ContextService, getContextService } from './ai/context-service';
 
 export interface Module {
   initialize(): void | Promise<void>;
@@ -115,6 +141,40 @@ export function getModuleSystem(): ModuleSystem {
       moduleSystemInstance.register('MemoryTrainingService', getMemoryTrainingService());
       moduleSystemInstance.register('SkillAssessmentService', getSkillAssessmentService());
       moduleSystemInstance.register('GameTrackingService', getGameTrackingService());
+      
+      // Collaboration & Real-time Phase (26-30)
+      moduleSystemInstance.register('CollaborationService', getCollaborationService());
+      moduleSystemInstance.register('MultiUserService', getMultiUserService());
+      moduleSystemInstance.register('SessionRecordingService', getSessionRecordingService());
+      moduleSystemInstance.register('RemoteAssistanceService', getRemoteAssistanceService());
+      moduleSystemInstance.register('SharedBoardsService', getSharedBoardsService());
+      
+      // Advanced Communication Phase (31-35)
+      moduleSystemInstance.register('SmartDefaultsService', getSmartDefaultsService());
+      moduleSystemInstance.register('WelcomeService', getWelcomeService());
+      moduleSystemInstance.register('NavigationService', getNavigationService());
+      moduleSystemInstance.register('BottomNavService', getBottomNavService());
+      moduleSystemInstance.register('AccountService', getAccountService());
+      
+      // Customization Phase (36-40)
+      moduleSystemInstance.register('AuthService', getAuthService());
+      moduleSystemInstance.register('QuickCreateService', getQuickCreateService());
+      moduleSystemInstance.register('BoardSharingService', getBoardSharingService());
+      moduleSystemInstance.register('BoardCreationService', getBoardCreationService());
+      moduleSystemInstance.register('TileOrganizationService', getTileOrganizationService());
+      
+      // AI & Integration Phase (41-42)
+      moduleSystemInstance.register('VisualHintsService', getVisualHintsService());
+      moduleSystemInstance.register('ServiceAdapter', getServiceAdapter());
+      
+      // Enterprise Phase (46-47)
+      moduleSystemInstance.register('AuditService', getAuditService());
+      moduleSystemInstance.register('ComplianceService', getComplianceService());
+      
+      // Advanced Phase (48-50)
+      moduleSystemInstance.register('ActionSequenceService', getActionSequenceService());
+      moduleSystemInstance.register('BackupService', getBackupService());
+      moduleSystemInstance.register('ContextService', getContextService());
     }
   }
   return moduleSystemInstance;
@@ -145,5 +205,27 @@ export {
   getEducationalGamesService,
   getMemoryTrainingService,
   getSkillAssessmentService,
-  getGameTrackingService
+  getGameTrackingService,
+  getCollaborationService,
+  getMultiUserService,
+  getSessionRecordingService,
+  getRemoteAssistanceService,
+  getSharedBoardsService,
+  getSmartDefaultsService,
+  getWelcomeService,
+  getNavigationService,
+  getBottomNavService,
+  getAccountService,
+  getAuthService,
+  getQuickCreateService,
+  getBoardSharingService,
+  getBoardCreationService,
+  getTileOrganizationService,
+  getVisualHintsService,
+  getServiceAdapter,
+  getAuditService,
+  getComplianceService,
+  getActionSequenceService,
+  getBackupService,
+  getContextService
 };
