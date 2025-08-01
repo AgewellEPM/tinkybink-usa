@@ -1,0 +1,1091 @@
+<!-- Loading Screen (hidden by default) -->
+  <div class="loading-screen" id="loadingScreen" style="display: none;">
+    <div class="loading-logo">🗣️</div>
+    <div class="loading-text">TinkyBink AAC</div>
+    <div class="loading-progress">
+      <div class="loading-progress-bar" id="loadingProgress"></div>
+    </div>
+    <div class="loading-status" id="loadingStatus">Initializing system...</div>
+  </div>
+
+  <!-- Star Background -->
+  <div id="stars"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>TinkyBink - Free AAC</h1>
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="breadcrumb-item" onclick="goHome()">Home</span>
+    </div>
+    <div class="header-buttons">
+      <button class="header-btn" id="backBtn" onclick="goBack()" title="Back (B)">◀</button>
+      <button class="header-btn" id="actionToggleBtn" onclick="toggleActionMode()" title="Toggle Action Boards (A)">🎯</button>
+      <button class="header-btn" onclick="toggleEditMode()" title="Edit Mode (E)">✏️</button>
+      <button class="header-btn" onclick="openElizaChat()" title="Eliza Chat" style="background: linear-gradient(135deg, #7b3ff2, #ff006e);">🧠</button>
+      <button class="header-btn" onclick="toggleCollaboration()" title="Collaboration" id="collaborationBtn">
+        <span id="collabIcon">👥</span>
+        <span id="collabIndicator" style="display: none; position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: #00ff00; border-radius: 50%;"></span>
+      </button>
+      <div class="user-menu">
+        <button class="user-menu-btn" onclick="toggleUserMenu()">
+          <span class="user-icon">👤</span>
+          <span class="user-name" id="userName">User</span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-info">
+            <strong id="userFullName">User Name</strong>
+            <span id="userRole" class="user-role">Role</span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <button onclick="showMyProfile()">My Profile</button>
+          <button onclick="showMyClinic()" id="clinicBtn">My Clinic</button>
+          <button onclick="switchClinic()" id="switchClinicBtn" style="display:none;">Switch Clinic</button>
+          <div class="dropdown-divider"></div>
+          <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+      </div>
+      <button class="header-btn" onclick="goHome()" title="Home (H)">🏠</button>
+      <button class="header-btn" onclick="openActionBoards()" title="Action Boards">🏃</button>
+      <button class="header-btn production-btn" onclick="openProductionDashboard()" title="Production Management" style="background: linear-gradient(135deg, #7b3ff2, #ff006e);">🏢</button>
+      <button class="header-btn settings-btn" onclick="openSettings()" title="Settings (S)">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Sentence Bar -->
+  <div class="sentence-bar">
+    <div class="sentence-content" id="sentenceBar" contenteditable="true" 
+         data-placeholder="Click tiles or type here... Try: 'Do you want apple banana cookie?'"
+         onkeypress="handleSentenceKeypress(event)"></div>
+    <div class="sentence-actions">
+      <button class="sentence-btn" onclick="speakSentence()" title="Speak (Space)">🔊</button>
+      <button class="sentence-btn" onclick="processElizaInput()" title="Process with Eliza">🧠</button>
+      <button class="sentence-btn clear" onclick="clearSentence()" title="Clear (C)">🗑️</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="tiles-container">
+      <div class="tiles-grid" id="tilesGrid"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-btn yes" onclick="quickSpeak('Yes')">✅</button>
+    <button class="nav-btn no" onclick="quickSpeak('No')">❌</button>
+    <button class="nav-btn help" onclick="quickSpeak('Help me please')">🆘</button>
+    <button class="nav-btn bathroom" onclick="quickSpeak('I need the bathroom')">🚽</button>
+  </div>
+
+  <!-- Settings Panel (Slide from Right) -->
+  <div id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+      <h2>Settings</h2>
+      <button class="close-settings" onclick="toggleSettings()">✖</button>
+    </div>
+      
+      <div class="settings-section">
+        <h3>🔊 Speech Settings</h3>
+        <div class="setting-item">
+          <label>Voice:</label>
+          <select id="voiceSelect" onchange="updateVoice()"></select>
+        </div>
+        <div class="setting-item">
+          <label>Speed: <span class="setting-value" id="rateValue">1.0</span></label>
+          <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeechSettings()">
+        </div>
+        <div class="setting-item">
+          <label>Pitch: <span class="setting-value" id="pitchValue">1.0</span></label>
+          <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1" onchange="updateSpeechSettings()">
+        </div>
+        <div class="setting-item">
+          <label>Volume: <span class="setting-value" id="volumeValue">1.0</span></label>
+          <input type="range" id="speechVolume" min="0" max="1" step="0.1" value="1" onchange="updateSpeechSettings()">
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>🎨 Display Settings</h3>
+        <div class="setting-item">
+          <label>Grid Columns: <span class="setting-value" id="gridValue">3</span></label>
+          <input type="range" id="gridColumns" min="2" max="5" step="1" value="3" onchange="updateDisplaySettings()">
+        </div>
+        <div class="setting-item">
+          <label>Tile Size: <span class="setting-value" id="tileSizeValue">1.0</span></label>
+          <input type="range" id="tileSize" min="0.8" max="1.5" step="0.1" value="1" onchange="updateDisplaySettings()">
+        </div>
+        <div class="setting-item">
+          <label>Emoji Size: <span class="setting-value" id="emojiSizeValue">1.0</span></label>
+          <input type="range" id="emojiSize" min="0.8" max="2" step="0.1" value="1" onchange="updateDisplaySettings()">
+        </div>
+        <div class="setting-item">
+          <label>Text Size: <span class="setting-value" id="fontSizeValue">1.0</span></label>
+          <input type="range" id="fontSize" min="0.8" max="1.5" step="0.1" value="1" onchange="updateDisplaySettings()">
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>👤 Account & Cloud</h3>
+        <div id="authSection" style="margin-bottom: 15px;">
+          <div id="googleSignInDiv"></div>
+        </div>
+        <div id="cloudSyncSection" style="display: none;">
+          <div class="action-buttons">
+            <button class="action-btn" onclick="syncNow()">☁️ Sync Now</button>
+            <button class="action-btn secondary" id="autoSyncBtn" onclick="toggleAutoSync()">
+              🔄 Auto-Sync: OFF
+            </button>
+          </div>
+          <div style="margin-top: 10px; color: #888; font-size: 14px;" id="syncStatus"></div>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>📊 Analytics & Professional Reports</h3>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="showAnalyticsDashboard()">📈 View Usage Stats</button>
+          <button class="action-btn professional" onclick="showProfessionalReports()">
+            <span class="btn-icon">🏥</span>
+            <span class="btn-text">Professional Reports</span>
+          </button>
+          <button class="action-btn secondary" onclick="exportAnalytics()">📥 Export Analytics</button>
+          <button class="action-btn secondary" onclick="clearAnalytics()">🗑️ Clear Analytics</button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>📍 Location & Context</h3>
+        <div style="margin-bottom: 15px;">
+          <label>Current Location: <span id="currentLocationDisplay">Unknown</span></label>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;" id="locationDebugInfo">
+            Click "Refresh Location" to detect your current position
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="requestLocationPermission()">📍 Enable Location</button>
+          <button class="action-btn" onclick="forceLocationRefresh()">🔄 Refresh Location</button>
+          <button class="action-btn secondary" onclick="showLocationManager()">🗺️ Manage Locations</button>
+          <button class="action-btn secondary" onclick="manualSetLocation()">📌 Set Location</button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>📁 Data Management</h3>
+        <div class="action-buttons">
+          <button class="action-btn secondary" onclick="exportBoards()">📥 Export Boards</button>
+          <button class="action-btn secondary" onclick="importBoards()">📤 Import Boards</button>
+          <button class="action-btn secondary" onclick="createBoard()">➕ Create New Board</button>
+          <button class="action-btn secondary" onclick="resetSettings()">🔄 Reset Settings</button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>🎮 Learning Games & Activities</h3>
+        <div class="action-buttons" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="action-btn" onclick="openWhichOneDoesntBelong()" style="background: linear-gradient(135deg, #e17055, #fdcb6e);">🧩 Which One Doesn't Belong?</button>
+          <button class="action-btn" onclick="openMatchTheSame()" style="background: linear-gradient(135deg, #00b894, #00cec9);">🎯 Match the Same</button>
+          <button class="action-btn" onclick="openFirstLetterMatch()" style="background: linear-gradient(135deg, #a29bfe, #fd79a8);">🔤 First Letter Match</button>
+          <button class="action-btn" onclick="openSequenceBuilder()" style="background: linear-gradient(135deg, #6c5ce7, #74b9ff);">📋 Sequence Builder</button>
+          <button class="action-btn" onclick="openWhatComesNext()" style="background: linear-gradient(135deg, #fdcb6e, #e17055);">➡️ What Comes Next?</button>
+          <button class="action-btn" onclick="openMatchTheEmotion()" style="background: linear-gradient(135deg, #fd79a8, #fdcb6e);">😊 Match the Emotion</button>
+          <button class="action-btn" onclick="openSayTheSentence()" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">💬 Say the Sentence</button>
+          <button class="action-btn" onclick="openWhatDoYouWear()" style="background: linear-gradient(135deg, #00cec9, #55a3ff);">👔 What Do You Wear?</button>
+          <button class="action-btn" onclick="openMakeASandwich()" style="background: linear-gradient(135deg, #ffeaa7, #fab1a0);">🥪 Make a Sandwich</button>
+          <button class="action-btn" onclick="openPickTheColor()" style="background: linear-gradient(135deg, #ff7675, #fd79a8);">🎨 Pick the Color</button>
+          <button class="action-btn" onclick="openPutAwayItems()" style="background: linear-gradient(135deg, #81ecec, #74b9ff);">📦 Put Away Items</button>
+          <button class="action-btn" onclick="openYesOrNoGame()" style="background: linear-gradient(135deg, #55a3ff, #6c5ce7);">❓ Yes or No Game</button>
+          <button class="action-btn" onclick="openSoundMatching()" style="background: linear-gradient(135deg, #fdcb6e, #e17055);">🔊 Sound Matching</button>
+          <button class="action-btn" onclick="openWhatsMissing()" style="background: linear-gradient(135deg, #fab1a0, #ff7675);">🔍 What's Missing?</button>
+          <button class="action-btn" onclick="openDailyRoutineBuilder()" style="background: linear-gradient(135deg, #00b894, #55a3ff);">📅 Daily Routine Builder</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>🖨️ PECS Printout Generator</h3>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="openPECSGenerator()" style="background: linear-gradient(135deg, #ff6b6b, #feca57); color: white;">📋 Create Printable PECS</button>
+          <button class="action-btn secondary" onclick="showPECSTemplates()">📄 View Templates</button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>🚀 Advanced PECS Features</h3>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="openQRCodeGenerator()" style="background: linear-gradient(135deg, #00b894, #00cec9);">
+            <span style="font-size: 16px;">📱</span> QR Code PECS
+          </button>
+          <button class="action-btn" onclick="openBoardSync()" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);">
+            <span style="font-size: 16px;">🔄</span> Board Sync
+          </button>
+          <button class="action-btn" onclick="openStoryBuilder()" style="background: linear-gradient(135deg, #fdcb6e, #e17055);">
+            <span style="font-size: 16px;">📚</span> Story Builder
+          </button>
+          <button class="action-btn" onclick="openAdvancedCustomization()" style="background: linear-gradient(135deg, #fd79a8, #e84393);">
+            <span style="font-size: 16px;">🎨</span> Customization
+          </button>
+          <button class="action-btn" onclick="openVelcroGuides()" style="background: linear-gradient(135deg, #81ecec, #74b9ff);">
+            <span style="font-size: 16px;">✂️</span> Velcro Guides
+          </button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>💰 Medicare/Medicaid Billing</h3>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="openBillingDashboard()" style="background: linear-gradient(135deg, #00C851, #007E33);">
+            <span style="font-size: 16px;">📊</span> Billing Dashboard
+          </button>
+          <button class="action-btn" onclick="openSessionDocumentation()" style="background: linear-gradient(135deg, #FFD93D, #FFB100);">
+            <span style="font-size: 16px;">📝</span> Document Session
+          </button>
+          <button class="action-btn" onclick="openClaimsManager()" style="background: linear-gradient(135deg, #03A9F4, #0277BD);">
+            <span style="font-size: 16px;">📄</span> Claims Manager
+          </button>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>🏥 Production Management</h3>
+        <div class="action-buttons">
+          <button class="action-btn" onclick="openDataProtection()" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+            <span style="font-size: 16px;">🔒</span> Data Protection
+          </button>
+          <button class="action-btn" onclick="openClinicalFeatures()" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+            <span style="font-size: 16px;">⚕️</span> Clinical Features
+          </button>
+          <button class="action-btn" onclick="openBackupManager()" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+            <span style="font-size: 16px;">💾</span> Backup Manager
+          </button>
+          <button class="action-btn" onclick="openComplianceCenter()" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+            <span style="font-size: 16px;">📋</span> HIPAA Compliance
+          </button>
+        </div>
+        <div class="setting-item" style="margin-top: 15px;">
+          <label style="display: flex; align-items: center; justify-content: space-between;">
+            <span>🔄 Auto Backup</span>
+            <label class="switch">
+              <input type="checkbox" id="autoBackupToggle" onchange="toggleAutoBackup()" checked>
+              <span class="slider round"></span>
+            </label>
+          </label>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            Automatic daily backups with encryption
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <h3>♿ Accessibility Features</h3>
+        <div class="setting-item">
+          <label style="display: flex; align-items: center; justify-content: space-between;">
+            <span>🎯 Switch Scanning</span>
+            <label class="switch">
+              <input type="checkbox" id="switchScanningToggle" onchange="toggleSwitchScanning()">
+              <span class="slider round"></span>
+            </label>
+          </label>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            For users with severe motor impairments
+          </div>
+        </div>
+        
+        <div class="setting-item" style="margin-top: 15px;">
+          <label style="display: flex; align-items: center; justify-content: space-between;">
+            <span>👁️ Eye Tracking</span>
+            <label class="switch">
+              <input type="checkbox" id="eyeTrackingToggle" onchange="toggleEyeTracking()">
+              <span class="slider round"></span>
+            </label>
+          </label>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            Control with eye movements (requires compatible hardware)
+          </div>
+        </div>
+        
+        <div class="setting-item" style="margin-top: 15px;">
+          <label style="display: flex; align-items: center; justify-content: space-between;">
+            <span>🎤 Voice Banking</span>
+            <button class="action-btn secondary" onclick="openVoiceBanking()" style="padding: 6px 12px; font-size: 14px;">
+              Setup
+            </button>
+          </label>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            Preserve your voice for ALS/degenerative conditions
+          </div>
+        </div>
+        
+        <div class="action-buttons" style="margin-top: 20px;">
+          <button class="action-btn" onclick="openAccessibilitySettings()" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+            <span style="font-size: 16px;">⚙️</span> Advanced Settings
+          </button>
+          <button class="action-btn secondary" onclick="testAccessibility()">
+            <span style="font-size: 16px;">🧪</span> Test Features
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics Dashboard Modal -->
+  <div id="analyticsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 Usage Analytics</h2>
+        <span class="close" onclick="closeAnalytics()">&times;</span>
+      </div>
+      
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>📈 Session Stats</h3>
+          <div class="stat-item">
+            <span class="stat-label">Session Duration</span>
+            <span class="stat-value" id="sessionDuration">0m 0s</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Clicks</span>
+            <span class="stat-value" id="totalClicks">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Speech Count</span>
+            <span class="stat-value" id="speechCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Boards Visited</span>
+            <span class="stat-value" id="boardsVisited">0</span>
+          </div>
+        </div>
+        
+        <div class="analytics-card">
+          <h3>🎯 Most Used Tiles</h3>
+          <div id="mostUsedTiles"></div>
+        </div>
+        
+        <div class="analytics-card">
+          <h3>📍 Most Visited Boards</h3>
+          <div id="mostVisitedBoards"></div>
+        </div>
+      </div>
+      
+      <div class="suggestions-container">
+        <h3>🧠 Smart Tile Suggestions</h3>
+        <p>Based on your usage patterns, we recommend these tiles for quick access:</p>
+        <div class="suggestion-tiles" id="tileSuggestions"></div>
+        <button class="action-btn" onclick="applySmartLayout()" style="margin-top: 15px;">
+          ✨ Apply Smart Layout
+        </button>
+      </div>
+      
+      <div class="analytics-card">
+        <h3>📊 Usage Over Time</h3>
+        <div class="chart-container">
+          <canvas id="usageChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <h3>🏷️ Tile Click Distribution</h3>
+        <div class="chart-container">
+          <canvas id="tileChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="action-buttons" style="margin-top: 30px;">
+        <button class="action-btn" onclick="exportAnalyticsReport()">📥 Export Report</button>
+        <button class="action-btn secondary" onclick="shareAnalytics()">📤 Share with SLP</button>
+        <button class="action-btn secondary" onclick="printAnalytics()">🖨️ Print Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Hint -->
+  <div class="keyboard-hint" id="keyboardHint">
+    Press ? for keyboard shortcuts
+  </div>
+
+  <!-- Professional Reports Modal -->
+  <div id="professionalReportsModal" class="modal">
+    <div class="modal-content" style="max-width: 1400px;">
+      <div class="modal-header">
+        <h2>👩‍🏫 Professional Reports Dashboard</h2>
+        <span class="close" onclick="closeProfessionalReports()">&times;</span>
+      </div>
+      
+      <div class="professional-tabs">
+        <button class="tab-btn active" onclick="showReportTab('teacher')">👩‍🏫 Teacher</button>
+        <button class="tab-btn" onclick="showReportTab('aba')">📊 ABA</button>
+        <button class="tab-btn" onclick="showReportTab('slp')">🗣️ SLP</button>
+        <button class="tab-btn" onclick="showReportTab('ssp')">🤝 SSP</button>
+        <button class="tab-btn" onclick="showReportTab('iep')">📋 IEP Goals</button>
+        <button class="tab-btn" onclick="showReportTab('billing')">💰 Billing</button>
+        <button class="tab-btn" onclick="showReportTab('compliance')">🔒 HIPAA</button>
+      </div>
+      
+      <!-- Teacher Reports Tab -->
+      <div id="teacher-tab" class="report-tab active">
+        <h3>📚 Teacher Progress Reports</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>📈 Communication Progress</h4>
+            <div id="teacher-progress-chart"></div>
+            <div class="report-metrics">
+              <div class="metric">
+                <span class="metric-label">Weekly Growth:</span>
+                <span class="metric-value" id="weekly-growth">+12%</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Vocabulary Expansion:</span>
+                <span class="metric-value" id="vocab-expansion">+8 new words</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Independence Level:</span>
+                <span class="metric-value" id="independence-level">75%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>🎯 Academic Integration</h4>
+            <div class="academic-subjects">
+              <div class="subject-item">
+                <span>Math: </span><span class="subject-progress">85% engagement</span>
+              </div>
+              <div class="subject-item">
+                <span>Reading: </span><span class="subject-progress">92% participation</span>
+              </div>
+              <div class="subject-item">
+                <span>Science: </span><span class="subject-progress">78% comprehension</span>
+              </div>
+              <div class="subject-item">
+                <span>Social Studies: </span><span class="subject-progress">88% interaction</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📅 Weekly Summary</h4>
+            <div id="weekly-summary">
+              <!-- Generated weekly summary -->
+            </div>
+            <button class="generate-btn" onclick="generateTeacherReport()">📄 Generate Full Report</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ABA Reports Tab -->
+      <div id="aba-tab" class="report-tab">
+        <h3>📊 ABA Data Collection & Analysis</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>🎯 Target Behaviors</h4>
+            <div class="behavior-tracking">
+              <div class="behavior-item">
+                <span class="behavior-name">Spontaneous Communication</span>
+                <div class="behavior-data">
+                  <span class="baseline">Baseline: 2/hour</span>
+                  <span class="current">Current: 8/hour</span>
+                  <span class="trend positive">↗ +300%</span>
+                </div>
+              </div>
+              <div class="behavior-item">
+                <span class="behavior-name">Request Making</span>
+                <div class="behavior-data">
+                  <span class="baseline">Baseline: 5/day</span>
+                  <span class="current">Current: 15/day</span>
+                  <span class="trend positive">↗ +200%</span>
+                </div>
+              </div>
+              <div class="behavior-item">
+                <span class="behavior-name">Social Interactions</span>
+                <div class="behavior-data">
+                  <span class="baseline">Baseline: 3/day</span>
+                  <span class="current">Current: 12/day</span>
+                  <span class="trend positive">↗ +300%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📈 Data Trends</h4>
+            <div id="aba-trends-chart"></div>
+          </div>
+          
+          <div class="report-card">
+            <h4>🎲 ABC Data</h4>
+            <div class="abc-data">
+              <div class="abc-item">
+                <strong>Antecedent:</strong> Preferred activity ending
+              </div>
+              <div class="abc-item">
+                <strong>Behavior:</strong> Uses AAC to request "more"
+              </div>
+              <div class="abc-item">
+                <strong>Consequence:</strong> Activity continued
+              </div>
+              <div class="abc-frequency">Frequency: 85% success rate</div>
+            </div>
+            <button class="generate-btn" onclick="generateABAReport()">📊 Generate ABA Report</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SLP Reports Tab -->
+      <div id="slp-tab" class="report-tab">
+        <h3>🗣️ Speech-Language Pathology Reports</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>🎤 Communication Modalities</h4>
+            <div class="modality-breakdown">
+              <div class="modality-item">
+                <span class="modality-name">AAC Device</span>
+                <div class="modality-bar">
+                  <div class="bar-fill" style="width: 75%"></div>
+                  <span class="percentage">75%</span>
+                </div>
+              </div>
+              <div class="modality-item">
+                <span class="modality-name">Gestures</span>
+                <div class="modality-bar">
+                  <div class="bar-fill" style="width: 15%"></div>
+                  <span class="percentage">15%</span>
+                </div>
+              </div>
+              <div class="modality-item">
+                <span class="modality-name">Vocalizations</span>
+                <div class="modality-bar">
+                  <div class="bar-fill" style="width: 10%"></div>
+                  <span class="percentage">10%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📝 Language Goals Progress</h4>
+            <div class="goals-progress">
+              <div class="goal-item">
+                <span class="goal-text">Express basic needs using 2-word combinations</span>
+                <span class="goal-progress">80% mastered</span>
+              </div>
+              <div class="goal-item">
+                <span class="goal-text">Request preferred items in 3+ environments</span>
+                <span class="goal-progress">65% mastered</span>
+              </div>
+              <div class="goal-item">
+                <span class="goal-text">Comment on activities during structured play</span>
+                <span class="goal-progress">45% mastered</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>🔤 Vocabulary Development</h4>
+            <div id="vocabulary-chart"></div>
+            <button class="generate-btn" onclick="generateSLPReport()">🗣️ Generate SLP Report</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SSP Reports Tab -->
+      <div id="ssp-tab" class="report-tab">
+        <h3>🤝 Special Support Professional Reports</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>👥 Social Interaction Data</h4>
+            <div class="interaction-metrics">
+              <div class="metric-row">
+                <span>Peer Interactions:</span>
+                <span class="metric-value">12 per day (↗ +60%)</span>
+              </div>
+              <div class="metric-row">
+                <span>Adult Interactions:</span>
+                <span class="metric-value">25 per day (↗ +40%)</span>
+              </div>
+              <div class="metric-row">
+                <span>Initiated Communications:</span>
+                <span class="metric-value">8 per day (↗ +100%)</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>🏫 Classroom Support Data</h4>
+            <div class="support-tracking">
+              <div class="support-item">
+                <span>Independent Task Completion:</span>
+                <span class="support-level">70% independent</span>
+              </div>
+              <div class="support-item">
+                <span>Following Directions:</span>
+                <span class="support-level">85% with visual supports</span>
+              </div>
+              <div class="support-item">
+                <span>Transition Success:</span>
+                <span class="support-level">90% with AAC cues</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📊 Behavioral Supports</h4>
+            <div id="behavior-support-chart"></div>
+            <button class="generate-btn" onclick="generateSSPReport()">🤝 Generate SSP Report</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- IEP Goals Tab -->
+      <div id="iep-tab" class="report-tab">
+        <h3>📋 IEP Goals Tracking</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>🎯 Current IEP Goals</h4>
+            <div class="iep-goals-list">
+              <div class="iep-goal">
+                <div class="goal-header">
+                  <span class="goal-number">Goal 1:</span>
+                  <span class="goal-area">Communication</span>
+                </div>
+                <div class="goal-text">
+                  Student will use AAC device to make requests in 4/5 opportunities across 3 settings
+                </div>
+                <div class="goal-progress-bar">
+                  <div class="progress-fill" style="width: 85%"></div>
+                  <span class="progress-text">85% - On Track</span>
+                </div>
+                <div class="goal-data">
+                  <span>Current: 17/20 opportunities</span>
+                  <span>Target Date: June 2024</span>
+                </div>
+              </div>
+              
+              <div class="iep-goal">
+                <div class="goal-header">
+                  <span class="goal-number">Goal 2:</span>
+                  <span class="goal-area">Social</span>
+                </div>
+                <div class="goal-text">
+                  Student will initiate social interactions with peers using AAC in 3/5 opportunities
+                </div>
+                <div class="goal-progress-bar">
+                  <div class="progress-fill" style="width: 60%"></div>
+                  <span class="progress-text">60% - Progressing</span>
+                </div>
+                <div class="goal-data">
+                  <span>Current: 12/20 opportunities</span>
+                  <span>Target Date: June 2024</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📈 Progress Over Time</h4>
+            <div id="iep-progress-chart"></div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📝 Generate Reports</h4>
+            <div class="report-buttons">
+              <button class="generate-btn" onclick="generateIEPProgress()">📋 IEP Progress Report</button>
+              <button class="generate-btn" onclick="generateIEPQuarterly()">📊 Quarterly Summary</button>
+              <button class="generate-btn" onclick="generateIEPAnnual()">📅 Annual Review Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Billing & Medicare/Medicaid Tab -->
+      <div id="billing-tab" class="report-tab">
+        <h3>💰 Medical Billing & Insurance Claims</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>🏥 Patient Management</h4>
+            <div class="patient-management">
+              <div class="patient-search">
+                <input type="text" id="patientSearch" placeholder="Search patients..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #333; background: rgba(255,255,255,0.1); color: white; border-radius: 5px;">
+                <div class="action-buttons">
+                  <button class="generate-btn" onclick="showAddPatientForm()">👤 Add New Patient</button>
+                  <button class="generate-btn secondary" onclick="searchPatients()">🔍 Search Patients</button>
+                </div>
+              </div>
+              <div id="patientList" class="patient-list"></div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📋 Session Documentation</h4>
+            <div class="session-form">
+              <select id="sessionPatient" style="width: 100%; padding: 8px; margin: 5px 0; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px;">
+                <option value="">Select Patient...</option>
+              </select>
+              <select id="sessionType" style="width: 100%; padding: 8px; margin: 5px 0; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px;">
+                <option value="individual_slp">Individual SLP (92507)</option>
+                <option value="group_slp">Group SLP (92508)</option>
+                <option value="ot_eval_low">OT Eval - Low (97165)</option>
+                <option value="ot_eval_mod">OT Eval - Moderate (97166)</option>
+                <option value="ot_eval_high">OT Eval - High (97167)</option>
+                <option value="therapeutic_activity">Therapeutic Activity (97530)</option>
+                <option value="aac_training">AAC Training (92609)</option>
+              </select>
+              <input type="number" id="sessionDuration" placeholder="Duration (minutes)" min="15" max="120" step="15" style="width: 100%; padding: 8px; margin: 5px 0; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px;">
+              <textarea id="sessionNotes" placeholder="Session notes..." rows="3" style="width: 100%; padding: 8px; margin: 5px 0; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px; resize: vertical;"></textarea>
+              <button class="generate-btn" onclick="createBillingSession()">💾 Document Session</button>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>💳 CPT Codes & Rates</h4>
+            <div class="cpt-codes-display" id="cptCodesDisplay">
+              <div class="cpt-item">
+                <div class="cpt-code">92507</div>
+                <div class="cpt-desc">Individual SLP Treatment</div>
+                <div class="cpt-rates">Medicare: $85.50 | Medicaid: $78.25</div>
+              </div>
+              <div class="cpt-item">
+                <div class="cpt-code">92508</div>
+                <div class="cpt-desc">Group SLP Treatment</div>
+                <div class="cpt-rates">Medicare: $42.75 | Medicaid: $39.10</div>
+              </div>
+              <div class="cpt-item">
+                <div class="cpt-code">92609</div>
+                <div class="cpt-desc">AAC Device Training</div>
+                <div class="cpt-rates">Medicare: $95.75 | Medicaid: $87.65</div>
+              </div>
+              <div class="cpt-item">
+                <div class="cpt-code">97530</div>
+                <div class="cpt-desc">Therapeutic Activities</div>
+                <div class="cpt-rates">Medicare: $68.25 | Medicaid: $62.45</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📊 Billing Analytics</h4>
+            <div class="billing-metrics">
+              <div class="metric-row">
+                <span class="metric-label">This Month Sessions:</span>
+                <span class="metric-value" id="monthlySessionCount">Loading...</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Monthly Revenue:</span>
+                <span class="metric-value" id="monthlyRevenue">Loading...</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Medicare Claims:</span>
+                <span class="metric-value" id="medicareClaimsCount">Loading...</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Medicaid Claims:</span>
+                <span class="metric-value" id="medicaidClaimsCount">Loading...</span>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button class="generate-btn" onclick="generateBillingReport()">📄 Generate Billing Report</button>
+              <button class="generate-btn" onclick="exportClaims()">💰 Export Claims</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- HIPAA Compliance Tab -->
+      <div id="compliance-tab" class="report-tab">
+        <h3>🔒 HIPAA Compliance & Security</h3>
+        <div class="report-grid">
+          <div class="report-card">
+            <h4>🛡️ Compliance Status</h4>
+            <div id="complianceStatus" class="compliance-dashboard">
+              <div class="compliance-score">
+                <div class="score-circle">
+                  <span class="score-value" id="complianceScoreValue">Loading...</span>
+                  <span class="score-label">Compliance Score</span>
+                </div>
+              </div>
+              <div class="compliance-items">
+                <div class="compliance-item">
+                  <span class="compliance-icon" id="encryptionIcon">🔐</span>
+                  <span class="compliance-text">Data Encryption</span>
+                  <span class="compliance-status" id="encryptionStatus">Active</span>
+                </div>
+                <div class="compliance-item">
+                  <span class="compliance-icon" id="auditIcon">📋</span>
+                  <span class="compliance-text">Audit Logging</span>
+                  <span class="compliance-status" id="auditStatus">Active</span>
+                </div>
+                <div class="compliance-item">
+                  <span class="compliance-icon" id="accessIcon">🔑</span>
+                  <span class="compliance-text">Access Controls</span>
+                  <span class="compliance-status" id="accessStatus">Active</span>
+                </div>
+                <div class="compliance-item">
+                  <span class="compliance-icon" id="retentionIcon">📦</span>
+                  <span class="compliance-text">Data Retention</span>
+                  <span class="compliance-status" id="retentionStatus">Compliant</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📋 Audit Trail</h4>
+            <div class="audit-trail" id="auditTrail">
+              <div class="audit-filters">
+                <input type="date" id="auditStartDate" style="padding: 5px; margin: 2px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px;">
+                <input type="date" id="auditEndDate" style="padding: 5px; margin: 2px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #333; border-radius: 4px;">
+                <button class="generate-btn secondary" onclick="filterAuditLog()">🔍 Filter</button>
+              </div>
+              <div class="audit-log-display" id="auditLogDisplay">
+                <div class="audit-entry">
+                  <span class="audit-time">2024-01-15 10:30:15</span>
+                  <span class="audit-action">patient_accessed</span>
+                  <span class="audit-user">dr.smith</span>
+                  <span class="audit-details">Patient accessed: pt_123456</span>
+                </div>
+                <div class="audit-entry">
+                  <span class="audit-time">2024-01-15 10:25:42</span>
+                  <span class="audit-action">session_created</span>
+                  <span class="audit-user">therapist.jones</span>
+                  <span class="audit-details">Session created for patient pt_123456</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📊 Security Metrics</h4>
+            <div class="security-metrics">
+              <div class="metric-row">
+                <span class="metric-label">Total Audit Events:</span>
+                <span class="metric-value" id="totalAuditEvents">Loading...</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">PHI Access Events:</span>
+                <span class="metric-value" id="phiAccessEvents">Loading...</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Failed Access Attempts:</span>
+                <span class="metric-value" id="failedAccessAttempts">0</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Last Compliance Check:</span>
+                <span class="metric-value" id="lastComplianceCheck">Loading...</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="report-card">
+            <h4>📝 Compliance Reports</h4>
+            <div class="report-buttons">
+              <button class="generate-btn" onclick="generateComplianceReport()">🔒 HIPAA Compliance Report</button>
+              <button class="generate-btn" onclick="exportAuditLog()">📋 Export Audit Log</button>
+              <button class="generate-btn secondary" onclick="runSecurityScan()">🔍 Run Security Scan</button>
+              <button class="generate-btn secondary" onclick="generateRiskAssessment()">⚠️ Risk Assessment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PECS Printout Generator Modal -->
+  <div id="pecsGeneratorModal" class="modal">
+    <div class="modal-content" style="max-width: 1200px;">
+      <div class="modal-header">
+        <h2>🖨️ PECS Printout Generator</h2>
+        <span class="close" onclick="closePECSGenerator()">&times;</span>
+      </div>
+      
+      <div class="pecs-generator-container">
+        <!-- AI Prompt Section -->
+        <div class="pecs-section">
+          <h3>🤖 AI-Powered Board Generator</h3>
+          <div class="pecs-prompt-area">
+            <textarea id="pecsPrompt" placeholder="Describe the PECS board you want to create... 
+
+Examples:
+• 'Build me a PECS board for bathroom routines'
+• 'Create a board for requesting snacks and drinks'
+• 'Make a bedtime routine board with 8 tiles'
+• 'I need a feelings and emotions board'
+• 'Create a classroom activities board'" rows="4" style="width: 100%; padding: 15px; border-radius: 8px; border: 2px solid var(--primary-color); background: rgba(255,255,255,0.1); color: white; font-size: 16px; resize: vertical;"></textarea>
+            <div class="action-buttons" style="margin-top: 15px;">
+              <button class="action-btn" onclick="generatePECSBoard()" style="background: linear-gradient(135deg, #ff6b6b, #feca57);">✨ Generate Board</button>
+              <button class="action-btn secondary" onclick="loadPECSTemplate('common')">📋 Load Common Template</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Board Preview Section -->
+        <div class="pecs-section">
+          <h3>👀 Board Preview</h3>
+          <div class="pecs-board-settings">
+            <div class="setting-group">
+              <label>Board Size:</label>
+              <select id="pecsBoardSize" onchange="updatePECSPreview()">
+                <option value="2x2">2×2 (4 tiles)</option>
+                <option value="3x3" selected>3×3 (9 tiles)</option>
+                <option value="4x3">4×3 (12 tiles)</option>
+                <option value="4x4">4×4 (16 tiles)</option>
+                <option value="5x4">5×4 (20 tiles)</option>
+              </select>
+            </div>
+            <div class="setting-group">
+              <label>Tile Size:</label>
+              <select id="pecsTileSize" onchange="updatePECSPreview()">
+                <option value="small">Small (2" × 2")</option>
+                <option value="medium" selected>Medium (2.5" × 2.5")</option>
+                <option value="large">Large (3" × 3")</option>
+              </select>
+            </div>
+            <div class="setting-group">
+              <label>Paper Size:</label>
+              <select id="pecsPaperSize" onchange="updatePECSPreview()">
+                <option value="letter" selected>Letter (8.5" × 11")</option>
+                <option value="legal">Legal (8.5" × 14")</option>
+                <option value="a4">A4 (210mm × 297mm)</option>
+                <option value="tabloid">Tabloid (11" × 17")</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="pecsPreview" class="pecs-preview">
+            <div class="pecs-tile">
+              <div class="pecs-emoji">🏠</div>
+              <div class="pecs-text">HOME</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">🍎</div>
+              <div class="pecs-text">APPLE</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">💧</div>
+              <div class="pecs-text">WATER</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">📚</div>
+              <div class="pecs-text">BOOK</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">🚗</div>
+              <div class="pecs-text">CAR</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">⚽</div>
+              <div class="pecs-text">PLAY</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">🛏️</div>
+              <div class="pecs-text">BED</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">👋</div>
+              <div class="pecs-text">HELLO</div>
+            </div>
+            <div class="pecs-tile">
+              <div class="pecs-emoji">❤️</div>
+              <div class="pecs-text">LOVE</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Manual Editor Section -->
+        <div class="pecs-section">
+          <h3>✏️ Manual Editor</h3>
+          <div class="pecs-editor">
+            <div class="editor-controls">
+              <input type="text" id="pecsEmojiInput" placeholder="🎯" style="width: 60px; text-align: center; font-size: 24px;">
+              <input type="text" id="pecsTextInput" placeholder="WORD" style="width: 120px; text-transform: uppercase;">
+              <button class="action-btn secondary" onclick="addPECSTile()">➕ Add Tile</button>
+              <button class="action-btn secondary" onclick="clearPECSBoard()">🗑️ Clear All</button>
+            </div>
+            
+            <!-- Drag & Drop Zone -->
+            <div class="drop-zone" id="pecsDropZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+              <div class="drop-zone-content">
+                <p>🖼️ Drag & Drop Images Here</p>
+                <p style="font-size: 12px; color: #999;">or click to browse</p>
+                <input type="file" id="pecsImageUpload" accept="image/*" multiple onchange="handleFileSelect(event)" style="display: none;">
+              </div>
+            </div>
+            
+            <div class="editor-tiles" id="pecsEditorTiles">
+              <!-- Editable tiles will be populated here -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Template Bank Section -->
+        <div class="pecs-section">
+          <h3>📚 Template Bank</h3>
+          <div class="template-categories">
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('school')">🏫 School</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('meals')">🍽️ Meals</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('toileting')">🚽 Toileting</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('feelings')">😊 Feelings</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('fieldtrip')">🚌 Field Trips</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('sensory')">🌈 Sensory</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('medical')">🏥 Medical</button>
+            <button class="template-cat-btn" onclick="loadCategoryTemplate('playground')">🛝 Playground</button>
+          </div>
+        </div>
+        
+        <!-- Print Actions -->
+        <div class="pecs-section">
+          <h3>🖨️ Print & Export</h3>
+          <div class="action-buttons">
+            <button class="action-btn" onclick="printPECSBoard()" style="background: linear-gradient(135deg, #00C851, #007E33);">🖨️ Print Board</button>
+            <button class="action-btn" onclick="downloadPECSPDF()" style="background: linear-gradient(135deg, #ff4757, #c44569);">📄 Download PDF</button>
+            <button class="action-btn secondary" onclick="savePECSTemplate()">💾 Save Template</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Boards Modal -->
+  <div id="actionBoardsModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 1200px; width: 95%; height: 90vh;">
+      <div class="modal-header">
+        <h2>🏃 Action Boards Library</h2>
+        <span class="close" onclick="closeActionBoards()">&times;</span>
+      </div>
+      
+      <div class="action-boards-container" style="padding: 20px;">
+        <div class="action-boards-search">
+          <input type="text" id="actionBoardSearch" placeholder="Search action boards..." 
+                 onkeyup="filterActionBoards()" 
+                 style="width: 100%; padding: 15px; font-size: 18px; border-radius: 8px; border: 2px solid var(--primary-color); background: rgba(255,255,255,0.1); color: white;">
+        </div>
+        
+        <div class="action-boards-categories" style="margin: 20px 0;">
+          <button class="category-btn active" onclick="filterByCategory('all')">🌟 All Boards</button>
+          <button class="category-btn" onclick="filterByCategory('daily')">🏠 Daily Living</button>
+          <button class="category-btn" onclick="filterByCategory('health')">🏥 Health & Wellness</button>
+          <button class="category-btn" onclick="filterByCategory('school')">🎒 School & Learning</button>
+          <button class="category-btn" onclick="filterByCategory('social')">👥 Social Skills</button>
+          <button class="category-btn" onclick="filterByCategory('activities')">🎯 Activities</button>
+          <button class="category-btn" onclick="filterByCategory('professions')">👷 Professions</button>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+          <p style="color: white; margin: 0; text-align: center;">
+            <strong>${actionBoardsData ? actionBoardsData.length : 0}</strong> Total Boards | 
+            <strong id="sequenceCount">0</strong> Step-by-Step Activities | 
+            <strong id="totalStepsCount">0</strong> Total Steps
+          </p>
+          <div id="categoryStats" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center;">
+            <!-- Category statistics will be loaded here -->
+          </div>
+        </div>
+        
+        <div id="actionBoardsGrid" class="action-boards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-height: 60vh; overflow-y: auto; padding: 20px 0;">
+          <!-- Action boards will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Settings Button (Mobile) -->
+  <button class="floating-settings" onclick="toggleSettings()" title="Settings">⚙️</button>

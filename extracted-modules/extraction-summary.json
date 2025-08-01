@@ -1,0 +1,328 @@
+{
+  "totalModules": 64,
+  "modules": [
+    {
+      "name": "AuthenticationSystem",
+      "linesOfCode": 463
+    },
+    {
+      "name": "OfflineManager",
+      "linesOfCode": 279
+    },
+    {
+      "name": "MobileAppWrapper",
+      "linesOfCode": 415
+    },
+    {
+      "name": "CollaborationSystem",
+      "linesOfCode": 679
+    },
+    {
+      "name": "AdvancedAnalyticsAI",
+      "linesOfCode": 1417
+    },
+    {
+      "name": "InsuranceClearinghouseAPI",
+      "linesOfCode": 128
+    },
+    {
+      "name": "PaymentProcessor",
+      "linesOfCode": 168
+    },
+    {
+      "name": "ComplianceSystem",
+      "linesOfCode": 236
+    },
+    {
+      "name": "SubscriptionManager",
+      "linesOfCode": 221
+    },
+    {
+      "name": "WhiteLabelConfig",
+      "linesOfCode": 286
+    },
+    {
+      "name": "MonitoringSystem",
+      "linesOfCode": 566
+    },
+    {
+      "name": "BillingInsuranceManager",
+      "linesOfCode": 1165
+    },
+    {
+      "name": "ModuleSystem",
+      "linesOfCode": 556
+    },
+    {
+      "name": "SpeechService",
+      "linesOfCode": 55
+    },
+    {
+      "name": "DataService",
+      "linesOfCode": 274
+    },
+    {
+      "name": "BoardManager",
+      "linesOfCode": 20
+    },
+    {
+      "name": "ElizaService",
+      "linesOfCode": 456
+    },
+    {
+      "name": "AnalyticsService",
+      "linesOfCode": 151
+    },
+    {
+      "name": "UIEffectsService",
+      "linesOfCode": 22
+    },
+    {
+      "name": "TileManagementService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "EmergencyTilesService",
+      "linesOfCode": 21
+    },
+    {
+      "name": "SessionTrackingService",
+      "linesOfCode": 11
+    },
+    {
+      "name": "HapticService",
+      "linesOfCode": 8
+    },
+    {
+      "name": "LanguageService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "VoiceRecognitionService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ImportExportService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "CloudSyncService",
+      "linesOfCode": 144
+    },
+    {
+      "name": "AccessibilityService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "PredictiveTextService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ContextService",
+      "linesOfCode": 669
+    },
+    {
+      "name": "GestureService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ScanningModeService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ThemeService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "OfflineService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "BackupService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ProfileService",
+      "linesOfCode": 109
+    },
+    {
+      "name": "NotificationService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "SchedulingService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ActionSequenceService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ProgressiveDisclosureService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "SimplifiedUIService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "MobileOptimizationService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "FirstTimeAnimationService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "SmartDefaultsService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "WelcomeService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "NavigationService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "BottomNavService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "AccountService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "AuthService",
+      "linesOfCode": 137
+    },
+    {
+      "name": "QuickCreateService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "BoardSharingService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "BoardCreationService",
+      "linesOfCode": 1383
+    },
+    {
+      "name": "TileOrganizationService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "VisualHintsService",
+      "linesOfCode": 2
+    },
+    {
+      "name": "ServiceAdapter",
+      "linesOfCode": 2
+    },
+    {
+      "name": "HIPAAService",
+      "linesOfCode": 112
+    },
+    {
+      "name": "BillingService",
+      "linesOfCode": 253
+    },
+    {
+      "name": "PatientService",
+      "linesOfCode": 130
+    },
+    {
+      "name": "AuditService",
+      "linesOfCode": 137
+    },
+    {
+      "name": "ComplianceService",
+      "linesOfCode": 11116
+    },
+    {
+      "name": "PatientRecordSystem",
+      "linesOfCode": 192
+    },
+    {
+      "name": "InsuranceClearinghouseAPI",
+      "linesOfCode": 114
+    },
+    {
+      "name": "EMRExportSystem",
+      "linesOfCode": 126
+    },
+    {
+      "name": "PaymentProcessingSystem",
+      "linesOfCode": 7580
+    }
+  ],
+  "categories": {
+    "Authentication & Security": [
+      "AuthenticationSystem",
+      "ComplianceSystem",
+      "AuthService"
+    ],
+    "Healthcare & Billing": [
+      "BillingInsuranceManager",
+      "InsuranceClearinghouseAPI",
+      "PaymentProcessor",
+      "SubscriptionManager"
+    ],
+    "Communication": [
+      "SpeechService",
+      "BoardManager",
+      "ElizaService",
+      "VoiceRecognitionService",
+      "EmergencyTilesService",
+      "TileManagementService"
+    ],
+    "Data & Analytics": [
+      "AdvancedAnalyticsAI",
+      "AnalyticsService",
+      "DataService",
+      "MonitoringSystem"
+    ],
+    "Collaboration & Sync": [
+      "CollaborationSystem",
+      "CloudSyncService",
+      "OfflineManager",
+      "BackupService",
+      "OfflineService"
+    ],
+    "User Experience": [
+      "AccessibilityService",
+      "ThemeService",
+      "LanguageService",
+      "GestureService",
+      "ScanningModeService",
+      "HapticService",
+      "UIEffectsService"
+    ],
+    "Additional Services": [
+      "ProfileService",
+      "NotificationService",
+      "SchedulingService",
+      "ImportExportService",
+      "WhiteLabelConfig",
+      "NavigationService",
+      "BottomNavService",
+      "AccountService",
+      "QuickCreateService",
+      "PredictiveTextService",
+      "ContextService",
+      "ActionSequenceService",
+      "ProgressiveDisclosureService",
+      "SimplifiedUIService",
+      "MobileOptimizationService",
+      "FirstTimeAnimationService",
+      "SmartDefaultsService",
+      "WelcomeService",
+      "SessionTrackingService",
+      "MobileAppWrapper",
+      "ModuleSystem"
+    ]
+  },
+  "extractedAt": "2025-07-31T21:29:21.986Z"
+}

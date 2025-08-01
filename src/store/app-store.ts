@@ -25,6 +25,11 @@ interface AppState {
   tiles: Tile[];
   boards: Board[];
   currentBoardId: string | null;
+  currentBoard: string | null;
+  boardHistory: string[];
+  sentence: string;
+  currentView: 'tiles' | 'eliza' | 'healthcare';
+  currentGame: string | null;
   
   // UI state
   isEditMode: boolean;
@@ -42,9 +47,21 @@ interface AppState {
   
   setBoards: (boards: Board[]) => void;
   setCurrentBoard: (boardId: string | null) => void;
+  navigateBack: () => void;
   
   toggleEditMode: () => void;
   updateSettings: (settings: Partial<AppState>) => void;
+  
+  // Sentence actions
+  addToSentence: (text: string) => void;
+  clearSentence: () => void;
+  setSentence: (text: string) => void;
+  
+  // View actions
+  setCurrentView: (view: 'tiles' | 'eliza' | 'healthcare') => void;
+  
+  // Game actions
+  setCurrentGame: (gameType: string | null) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -54,6 +71,11 @@ export const useAppStore = create<AppState>()(
       tiles: [],
       boards: [],
       currentBoardId: null,
+      currentBoard: null,
+      boardHistory: [],
+      sentence: '',
+      currentView: 'tiles',
+      currentGame: null,
       
       isEditMode: false,
       speechRate: 1,
@@ -84,11 +106,40 @@ export const useAppStore = create<AppState>()(
       
       setBoards: (boards) => set({ boards }),
       
-      setCurrentBoard: (boardId) => set({ currentBoardId: boardId }),
+      setCurrentBoard: (board) => set((state) => ({ 
+        currentBoard: board,
+        currentBoardId: board,
+        boardHistory: board ? [...state.boardHistory, state.currentBoard].filter(Boolean) : []
+      })),
+      
+      navigateBack: () => set((state) => {
+        const newHistory = [...state.boardHistory];
+        const previousBoard = newHistory.pop();
+        return {
+          currentBoard: previousBoard || null,
+          currentBoardId: previousBoard || null,
+          boardHistory: newHistory
+        };
+      }),
       
       toggleEditMode: () => set((state) => ({ isEditMode: !state.isEditMode })),
       
       updateSettings: (settings) => set(settings),
+      
+      // Sentence actions
+      addToSentence: (text) => set((state) => ({ 
+        sentence: state.sentence ? `${state.sentence} ${text}` : text 
+      })),
+      
+      clearSentence: () => set({ sentence: '' }),
+      
+      setSentence: (text) => set({ sentence: text }),
+      
+      // View actions
+      setCurrentView: (view) => set({ currentView: view }),
+      
+      // Game actions
+      setCurrentGame: (gameType) => set({ currentGame: gameType }),
     }),
     {
       name: 'tinkybink-storage',

@@ -1,29 +1,98 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { StarBackground } from '@/components/effects/StarBackground';
 import { Header } from '@/components/layouts/Header';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-
-// Dynamic imports for code splitting - only load what's needed
-const BoardManager = dynamic(
-  () => import('@/components/modules/BoardManager').then(mod => ({ default: mod.BoardManager })),
-  { 
-    loading: () => <LoadingSpinner />,
-    ssr: false // Client-side only for performance
-  }
-);
+import { SentenceBar } from '@/components/layouts/SentenceBar';
+import { CategoryBoard } from '@/components/modules/CategoryBoard';
+import { BoardView } from '@/components/modules/BoardView';
+import { BottomNav } from '@/components/layouts/BottomNav';
+import { SettingsPanel } from '@/components/layouts/SettingsPanel';
+import { DevTools } from '@/components/DevTools';
+import { ElizaChat } from '@/components/modules/ElizaChat';
+import { HealthcareDashboard } from '@/components/healthcare/HealthcareDashboard';
+import { GameModal } from '@/components/modals/GameModal';
+import { useAppStore } from '@/store/app-store';
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
+  const { currentBoard, currentView, currentGame, setCurrentView, setCurrentGame } = useAppStore();
+  
+  useEffect(() => {
+    // Initialize all modules on page load
+    const initializeModules = async () => {
+      // This will be where we initialize all 64 modules
+      console.log('Initializing TinkyBink with 64 modules...');
+    };
+    
+    initializeModules();
+  }, []);
+
+  // When Eliza is open, show only Eliza with its own header
+  if (currentView === 'eliza') {
+    return (
+      <>
+        <StarBackground />
+        <div className="min-h-screen relative">
+          <ElizaChat onClose={() => setCurrentView('tiles')} />
+        </div>
+      </>
+    );
+  }
+
+  // When Healthcare is open, show only Healthcare with its own header
+  if (currentView === 'healthcare') {
+    return (
+      <>
+        <StarBackground />
+        <div className="min-h-screen relative">
+          <HealthcareDashboard onClose={() => setCurrentView('tiles')} />
+        </div>
+      </>
+    );
+  }
+
+  // Normal AAC interface
   return (
-    <div className="min-h-screen bg-gray-950">
-      <Header />
+    <>
+      {/* Star Background Animation */}
+      <StarBackground />
       
-      <main className="container mx-auto px-4 py-8">
-        <Suspense fallback={<LoadingSpinner />}>
-          <BoardManager />
-        </Suspense>
-      </main>
-    </div>
+      {/* Main App Container */}
+      <div className="min-h-screen relative">
+        {/* Header with all controls */}
+        <Header />
+        
+        {/* Sentence Bar */}
+        <SentenceBar />
+        
+        {/* Main Content Area */}
+        <main className="main-content">
+          <div className="tiles-container">
+            {!currentBoard ? (
+              // Show category tiles on home
+              <CategoryBoard />
+            ) : (
+              // Show specific board tiles
+              <BoardView />
+            )}
+          </div>
+        </main>
+        
+        {/* Bottom Navigation */}
+        <BottomNav />
+        
+        {/* Settings Panel (slides from right) */}
+        <SettingsPanel />
+        
+        {/* Game Modal */}
+        <GameModal gameType={currentGame} onClose={() => setCurrentGame(null)} />
+        
+        {/* Dev Tools */}
+        <DevTools />
+        
+        {/* Modals will be rendered here */}
+        <div id="modals-root" />
+      </div>
+    </>
   );
 }

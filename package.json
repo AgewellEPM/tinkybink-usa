@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3456",
+    "dev:auto": "node dev-server.js",
+    "dev:turbo": "next dev --turbo -p 3456",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -p 3456",
+    "lint": "next lint",
+    "clean": "rm -rf .next node_modules package-lock.json && npm install"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.28.1",

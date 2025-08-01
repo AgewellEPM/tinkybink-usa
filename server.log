@@ -1,0 +1,19 @@
+
+> tinkybink-usa@0.1.0 dev
+> next dev -p 3456
+
+   ▲ Next.js 15.4.5
+   - Local:        http://localhost:3456
+   - Network:      http://10.0.0.236:3456
+
+ ✓ Starting...
+ ✓ Ready in 1163ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1004ms (1591 modules)
+ HEAD / 200 in 1253ms
+ ✓ Compiled in 36ms (740 modules)
+ GET / 200 in 90ms
+ ⚠ Cross origin request detected from 10.0.0.236 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ✓ Compiled /favicon.ico in 179ms (868 modules)
+ GET /favicon.ico 200 in 276ms
