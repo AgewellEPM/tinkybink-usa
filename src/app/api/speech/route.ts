@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
       },
     });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: 'Speech generation failed' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

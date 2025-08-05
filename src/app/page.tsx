@@ -12,8 +12,9 @@ import { ElizaChat } from '@/components/modules/ElizaChat';
 import { HealthcareDashboard } from '@/components/healthcare/HealthcareDashboard';
 import { BillingDashboard } from '@/components/healthcare/BillingDashboard';
 import { GameModal } from '@/components/modals/GameModal';
+import { RevolutionaryFeatures } from '@/components/RevolutionaryFeatures';
 import { useAppStore } from '@/store/app-store';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function HomePage() {
   const { currentBoard, currentView, currentGame, setCurrentView, setCurrentGame } = useAppStore();
@@ -83,6 +84,9 @@ export default function HomePage() {
       <div className="min-h-screen relative">
         {/* Header with all controls */}
         <Header />
+        
+        {/* Revolutionary AI Features Integration */}
+        <RevolutionaryFeatures />
         
         {/* Sentence Bar */}
         <SentenceBar />

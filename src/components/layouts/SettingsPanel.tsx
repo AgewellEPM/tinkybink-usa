@@ -12,6 +12,7 @@ import { PECSFeaturesSection } from '@/components/settings/sections/PECSFeatures
 import { BillingSection } from '@/components/settings/sections/BillingSection';
 import { ProductionManagementSection } from '@/components/settings/sections/ProductionManagementSection';
 import { AccessibilitySection } from '@/components/settings/sections/AccessibilitySection';
+import { SubscriptionSection } from '@/components/settings/SubscriptionSection';
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -275,6 +276,7 @@ export function SettingsPanel() {
       </div>
 
       <AccountCloudSection />
+      <SubscriptionSection />
       <AnalyticsSection />
       <LocationContextSection />
       <DataManagementSection />

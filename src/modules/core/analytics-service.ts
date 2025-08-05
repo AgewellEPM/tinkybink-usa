@@ -195,10 +195,14 @@ export class AnalyticsService {
       boardVisits: Object.fromEntries(this.boardVisits)
     };
 
-    localStorage.setItem('tinkybink_analytics', JSON.stringify(data));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tinkybink_analytics', JSON.stringify(data));
+    }
   }
 
   private loadStoredAnalytics() {
+    if (typeof window === 'undefined') return;
+    
     const stored = localStorage.getItem('tinkybink_analytics');
     if (stored) {
       try {
@@ -220,7 +224,9 @@ export class AnalyticsService {
     this.speechEvents = [];
     this.tileUsage.clear();
     this.boardVisits.clear();
-    localStorage.removeItem('tinkybink_analytics');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('tinkybink_analytics');
+    }
   }
 }
 
