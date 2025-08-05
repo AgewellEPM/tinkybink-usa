@@ -44,7 +44,7 @@ export function WhatsMissing({ onClose }: { onClose: () => void }) {
   const generateOptions = () => {
     const scene = scenes[currentScene];
     const missing = scene.missing[currentMissing];
-    let newOptions = [...scene.complete, '🎈', '📱'].sort(() => Math.random() - 0.5).slice(0, 4);
+    const newOptions = [...scene.complete, '🎈', '📱'].sort(() => Math.random() - 0.5).slice(0, 4);
     
     // Make sure the correct answer is included
     if (!newOptions.includes(missing.answer)) {

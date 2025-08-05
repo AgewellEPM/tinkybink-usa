@@ -27,7 +27,7 @@ export function PickTheColor({ onClose }: { onClose: () => void }) {
   const startRound = () => {
     const newColor = colors[Math.floor(Math.random() * colors.length)];
     const allItems = colors.flatMap(c => c.items);
-    let newShuffled = allItems.sort(() => Math.random() - 0.5).slice(0, 6);
+    const newShuffled = allItems.sort(() => Math.random() - 0.5).slice(0, 6);
     
     // Ensure at least one correct item is included
     if (!newShuffled.some(item => newColor.items.includes(item))) {

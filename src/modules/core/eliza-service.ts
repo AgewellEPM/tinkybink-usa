@@ -279,7 +279,7 @@ export class ElizaService {
 
   private extractItems(text: string): Array<{ emoji: string; text: string; speech?: string }> {
     // Remove question words and punctuation
-    let cleaned = text.toLowerCase()
+    const cleaned = text.toLowerCase()
       .replace(/do you want|would you like|can i get you|do you need|choose between|pick from|select from|which one|what about/g, '')
       .replace(/\?|!|\./g, '')
       .trim();

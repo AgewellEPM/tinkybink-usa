@@ -279,3 +279,83 @@ Import trace for requested module:
 ./src/modules/module-system.ts
 ./src/components/layouts/SentenceBar.tsx
 ./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx
+ ⚠ ./src/modules/analytics/predictive-analytics-service.ts
+Module not found: Can't resolve '@tensorflow/tfjs' in '/Users/lukekist/tinkybink-usa/src/modules/analytics'
+
+Import trace for requested module:
+./src/modules/analytics/predictive-analytics-service.ts
+./src/modules/module-system.ts
+./src/components/layouts/SentenceBar.tsx
+./src/app/page.tsx

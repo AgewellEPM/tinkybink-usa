@@ -491,7 +491,7 @@ export class AuthService {
 
     try {
       // Check if account exists
-      let profile = await accountService.getProfile(googleUser.id);
+      const profile = await accountService.getProfile(googleUser.id);
       
       if (!profile) {
         // Create new account

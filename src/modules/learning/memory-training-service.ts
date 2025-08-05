@@ -188,7 +188,7 @@ export class MemoryTrainingService {
     const exercises = Array.from(this.exercises.values());
     
     // Filter by age appropriateness and difficulty
-    let suitable = exercises.filter(ex => {
+    const suitable = exercises.filter(ex => {
       if (userAge < 5) return ex.difficulty === 'beginner';
       if (userAge < 10) return ex.difficulty !== 'advanced';
       return true;

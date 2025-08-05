@@ -700,7 +700,7 @@ export class BoardCreationService {
 
     const templates = this.getTemplatesByCategory(category);
     
-    let templatesHTML = templates.map(template => `
+    const templatesHTML = templates.map(template => `
       <div class="template-card" data-template-id="${template.id}" 
            style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.2s;">
         <h4 style="margin: 0 0 10px 0;">${template.name}</h4>

@@ -8,7 +8,7 @@ export interface PECSTile {
   category?: string;
 }
 
-export interface PECSBoard extends Array<PECSTile> {}
+export type PECSBoard = Array<PECSTile>
 
 export function usePECSStore() {
   const { boards } = useAppStore();

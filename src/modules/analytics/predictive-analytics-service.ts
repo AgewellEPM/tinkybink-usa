@@ -259,7 +259,7 @@ export class PredictiveAnalyticsService {
 
     try {
       const words = partialSentence.split(' ');
-      let completed = [...words];
+      const completed = [...words];
 
       while (completed.length < words.length + maxLength) {
         const predictions = await this.predictNextWords(
@@ -339,16 +339,16 @@ export class PredictiveAnalyticsService {
     const availableModules = this.getAvailableModules(completedModules);
     
     // Predict success probability for each module
-    for (const module of availableModules) {
+    for (const mod of availableModules) {
       const prediction = await this.predictModuleSuccess(
-        module,
+        mod,
         currentSkillLevel,
         learningProfile
       );
       
       predictions.push({
-        nextModule: module.id,
-        difficulty: this.calculateDifficulty(module, currentSkillLevel),
+        nextModule: mod.id,
+        difficulty: this.calculateDifficulty(mod, currentSkillLevel),
         estimatedTime: this.estimateCompletionTime(module, learningProfile),
         prerequisites: this.getPrerequisites(module, completedModules),
         successProbability: prediction.probability
