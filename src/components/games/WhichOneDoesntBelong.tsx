@@ -30,9 +30,9 @@ export function WhichOneDoesntBelong({ onClose }: { onClose: () => void }) {
     
     if (isCorrect) {
       setScore(score + 1);
-      speak(`Correct! ${selected} doesn't belong!`);
+      speak(`Correct! ${selected} doesn&apos;t belong!`);
     } else {
-      speak(`Try again! ${round.odd} doesn't belong.`);
+      speak(`Try again! ${round.odd} doesn&apos;t belong.`);
     }
     
     setTimeout(() => {
@@ -78,7 +78,7 @@ export function WhichOneDoesntBelong({ onClose }: { onClose: () => void }) {
           textAlign: 'center'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ margin: 0, fontSize: '24px' }}>🧩 Which One Doesn't Belong?</h2>
+            <h2 style={{ margin: 0, fontSize: '24px' }}>🧩 Which One Doesn&apos;t Belong?</h2>
             <button 
               onClick={onClose}
               style={{
@@ -174,7 +174,7 @@ export function WhichOneDoesntBelong({ onClose }: { onClose: () => void }) {
         
         <div style={{ textAlign: 'center' }}>
           <h3>Round {currentRound + 1}</h3>
-          <p>Which one doesn't belong? ({round.category})</p>
+          <p>Which one doesn&apos;t belong? ({round.category})</p>
           <p>Score: {score}/{currentRound}</p>
           
           <div style={{ 

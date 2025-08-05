@@ -254,7 +254,7 @@ export const MonitoringTab: React.FC = () => {
               justifyContent: 'space-between' 
             }}>
               <span>Replication Lag:</span>
-              <strong>< 1ms</strong>
+              <strong>&lt; 1ms</strong>
             </div>
           </div>
         </div>

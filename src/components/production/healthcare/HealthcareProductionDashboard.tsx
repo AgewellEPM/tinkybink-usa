@@ -5,6 +5,10 @@ import { BillingInsuranceTab } from './BillingInsuranceTab';
 import { WhiteLabelTab } from './WhiteLabelTab';
 import { SubscriptionsTab } from './SubscriptionsTab';
 import { MonitoringTab } from './MonitoringTab';
+import { EnhancedOverviewTab } from './EnhancedOverviewTab';
+import { EnhancedMonitoringTab } from './EnhancedMonitoringTab';
+import { AuthGuard } from '@/components/auth/AuthGuard';
+import { logger } from '@/services/logger';
 
 interface HealthcareProductionDashboardProps {
   isOpen: boolean;
@@ -16,9 +20,11 @@ export const HealthcareProductionDashboard: React.FC<HealthcareProductionDashboa
   onClose 
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [useEnhanced, setUseEnhanced] = useState(true); // Toggle for demo
 
   useEffect(() => {
     if (isOpen) {
+      logger.info('Healthcare Production Dashboard opened');
       // Speak when opening (from original HTML)
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance('Opening production dashboard');
@@ -43,20 +49,31 @@ export const HealthcareProductionDashboard: React.FC<HealthcareProductionDashboa
   if (!isOpen) return null;
 
   return (
-    <div className="modal" style={{ display: 'flex', zIndex: 10000 }}>
-      <div 
-        className="modal-content" 
-        style={{ 
-          maxWidth: '900px', 
-          height: '90vh', 
-          overflowY: 'auto',
-          width: '95%'
-        }}
-      >
-        <div className="modal-header">
-          <h2>🏢 Healthcare Production Management</h2>
-          <button className="close-btn" onClick={onClose}>✖</button>
-        </div>
+    <AuthGuard requiredRole="admin" requiredPermissions={['view_production', 'manage_production']}>
+      <div className="modal" style={{ display: 'flex', zIndex: 10000 }}>
+        <div 
+          className="modal-content" 
+          style={{ 
+            maxWidth: '900px', 
+            height: '90vh', 
+            overflowY: 'auto',
+            width: '95%'
+          }}
+        >
+          <div className="modal-header">
+            <h2>🏢 Healthcare Production Management</h2>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <label style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <input 
+                  type="checkbox" 
+                  checked={useEnhanced}
+                  onChange={(e) => setUseEnhanced(e.target.checked)}
+                />
+                Enhanced Mode
+              </label>
+              <button className="close-btn" onClick={onClose}>✖</button>
+            </div>
+          </div>
         
         <div className="modal-body">
           {/* Navigation Tabs - Exact from HTML */}
@@ -112,15 +129,16 @@ export const HealthcareProductionDashboard: React.FC<HealthcareProductionDashboa
           
           {/* Tab Content */}
           <div id="production-tab-content">
-            {activeTab === 'overview' && <OverviewTab />}
+            {activeTab === 'overview' && (useEnhanced ? <EnhancedOverviewTab /> : <OverviewTab />)}
             {activeTab === 'api' && <APIIntegrationTab />}
             {activeTab === 'billing' && <BillingInsuranceTab />}
             {activeTab === 'whitelabel' && <WhiteLabelTab />}
             {activeTab === 'subscriptions' && <SubscriptionsTab />}
-            {activeTab === 'monitoring' && <MonitoringTab />}
+            {activeTab === 'monitoring' && (useEnhanced ? <EnhancedMonitoringTab /> : <MonitoringTab />)}
           </div>
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };

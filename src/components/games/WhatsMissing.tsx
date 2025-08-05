@@ -119,7 +119,7 @@ export function WhatsMissing({ onClose }: { onClose: () => void }) {
         position: 'relative'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px' }}>🔍 What's Missing?</h2>
+          <h2 style={{ margin: 0, fontSize: '24px' }}>🔍 What&apos;s Missing?</h2>
           <button 
             onClick={onClose}
             style={{

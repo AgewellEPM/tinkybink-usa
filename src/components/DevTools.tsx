@@ -53,7 +53,7 @@ export function DevTools() {
               <div className="text-green-400">Board: {store.currentBoard || 'home'}</div>
               <div className="text-blue-400">History: [{store.boardHistory.join(', ')}]</div>
               <div className="text-yellow-400">Edit Mode: {store.isEditMode ? 'ON' : 'OFF'}</div>
-              <div className="text-purple-400">Sentence: "{store.sentence}"</div>
+              <div className="text-purple-400">Sentence: &ldquo;{store.sentence}&rdquo;</div>
             </div>
           </div>
 

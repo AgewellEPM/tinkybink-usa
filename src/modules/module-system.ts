@@ -23,6 +23,8 @@ import { EducationalGamesService, getEducationalGamesService } from './learning/
 import { MemoryTrainingService, getMemoryTrainingService } from './learning/memory-training-service';
 import { SkillAssessmentService, getSkillAssessmentService } from './learning/skill-assessment-service';
 import { getGameTrackingService } from '@/services/game-tracking';
+import { RewardsSystemService, getRewardsSystemService } from './learning/rewards-system-service';
+import { GamificationService, getGamificationService } from './learning/gamification-service';
 import { CollaborationService, getCollaborationService } from './collaboration/collaboration-service';
 import { MultiUserService, getMultiUserService } from './collaboration/multi-user-service';
 import { SessionRecordingService, getSessionRecordingService } from './collaboration/session-recording-service';
@@ -39,9 +41,12 @@ import { QuickCreateService, getQuickCreateService } from './customization/quick
 import { BoardSharingService, getBoardSharingService } from './customization/board-sharing-service';
 import { BoardCreationService, getBoardCreationService } from './customization/board-creation-service';
 import { TileOrganizationService, getTileOrganizationService } from './customization/tile-organization-service';
-// AI & Integration Phase (41-42)
+// AI & Integration Phase (41-45)
 import { VisualHintsService, getVisualHintsService } from './ai/visual-hints-service';
 import { ServiceAdapter, getServiceAdapter } from './integration/service-adapter';
+import { APIIntegrationService, getAPIIntegrationService } from './integration/api-integration-service';
+import { DeviceIntegrationService, getDeviceIntegrationService } from './integration/device-integration-service';
+import { PlatformIntegrationService, getPlatformIntegrationService } from './integration/platform-integration-service';
 // Enterprise Phase (46-47)
 import { AuditService, getAuditService } from './enterprise/audit-service';
 import { ComplianceService, getComplianceService } from './enterprise/compliance-service';
@@ -49,6 +54,18 @@ import { ComplianceService, getComplianceService } from './enterprise/compliance
 import { ActionSequenceService, getActionSequenceService } from './advanced/action-sequence-service';
 import { BackupService, getBackupService } from './data/backup-service';
 import { ContextService, getContextService } from './ai/context-service';
+// Advanced Analytics Phase (51-55)
+import { PredictiveAnalyticsService, getPredictiveAnalyticsService } from './analytics/predictive-analytics-service';
+import { UsagePatternsService, getUsagePatternsService } from './analytics/usage-patterns-service';
+import { PerformanceMetricsService, getPerformanceMetricsService } from './analytics/performance-metrics-service';
+import { DataVisualizationService, getDataVisualizationService } from './analytics/data-visualization-service';
+import { ReportGenerationService, getReportGenerationService } from './analytics/report-generation-service';
+// Enterprise Features Phase (56-60)
+import { MultiTenantService, getMultiTenantService } from './enterprise/multi-tenant-service';
+import { RBACService, getRBACService } from './enterprise/rbac-service';
+import { EnterpriseDashboardService, getEnterpriseDashboardService } from './enterprise/enterprise-dashboard-service';
+import { ScalabilityService, getScalabilityService } from './enterprise/scalability-service';
+import { EnterpriseIntegrationService, getEnterpriseIntegrationService } from './enterprise/enterprise-integration-service';
 
 export interface Module {
   initialize(): void | Promise<void>;
@@ -141,6 +158,8 @@ export function getModuleSystem(): ModuleSystem {
       moduleSystemInstance.register('MemoryTrainingService', getMemoryTrainingService());
       moduleSystemInstance.register('SkillAssessmentService', getSkillAssessmentService());
       moduleSystemInstance.register('GameTrackingService', getGameTrackingService());
+      moduleSystemInstance.register('RewardsSystemService', getRewardsSystemService());
+      moduleSystemInstance.register('GamificationService', getGamificationService());
       
       // Collaboration & Real-time Phase (26-30)
       moduleSystemInstance.register('CollaborationService', getCollaborationService());
@@ -163,9 +182,12 @@ export function getModuleSystem(): ModuleSystem {
       moduleSystemInstance.register('BoardCreationService', getBoardCreationService());
       moduleSystemInstance.register('TileOrganizationService', getTileOrganizationService());
       
-      // AI & Integration Phase (41-42)
+      // AI & Integration Phase (41-45)
       moduleSystemInstance.register('VisualHintsService', getVisualHintsService());
       moduleSystemInstance.register('ServiceAdapter', getServiceAdapter());
+      moduleSystemInstance.register('APIIntegrationService', getAPIIntegrationService());
+      moduleSystemInstance.register('DeviceIntegrationService', getDeviceIntegrationService());
+      moduleSystemInstance.register('PlatformIntegrationService', getPlatformIntegrationService());
       
       // Enterprise Phase (46-47)
       moduleSystemInstance.register('AuditService', getAuditService());
@@ -175,6 +197,20 @@ export function getModuleSystem(): ModuleSystem {
       moduleSystemInstance.register('ActionSequenceService', getActionSequenceService());
       moduleSystemInstance.register('BackupService', getBackupService());
       moduleSystemInstance.register('ContextService', getContextService());
+      
+      // Advanced Analytics Phase (51-55)
+      moduleSystemInstance.register('PredictiveAnalyticsService', getPredictiveAnalyticsService());
+      moduleSystemInstance.register('UsagePatternsService', getUsagePatternsService());
+      moduleSystemInstance.register('PerformanceMetricsService', getPerformanceMetricsService());
+      moduleSystemInstance.register('DataVisualizationService', getDataVisualizationService());
+      moduleSystemInstance.register('ReportGenerationService', getReportGenerationService());
+      
+      // Enterprise Features Phase (56-60)
+      moduleSystemInstance.register('MultiTenantService', getMultiTenantService());
+      moduleSystemInstance.register('RBACService', getRBACService());
+      moduleSystemInstance.register('EnterpriseDashboardService', getEnterpriseDashboardService());
+      moduleSystemInstance.register('ScalabilityService', getScalabilityService());
+      moduleSystemInstance.register('EnterpriseIntegrationService', getEnterpriseIntegrationService());
     }
   }
   return moduleSystemInstance;
@@ -205,6 +241,8 @@ export {
   getEducationalGamesService,
   getMemoryTrainingService,
   getSkillAssessmentService,
+  getRewardsSystemService,
+  getGamificationService,
   getGameTrackingService,
   getCollaborationService,
   getMultiUserService,
@@ -223,9 +261,22 @@ export {
   getTileOrganizationService,
   getVisualHintsService,
   getServiceAdapter,
+  getAPIIntegrationService,
+  getDeviceIntegrationService,
+  getPlatformIntegrationService,
   getAuditService,
   getComplianceService,
   getActionSequenceService,
   getBackupService,
-  getContextService
+  getContextService,
+  getPredictiveAnalyticsService,
+  getUsagePatternsService,
+  getPerformanceMetricsService,
+  getDataVisualizationService,
+  getReportGenerationService,
+  getMultiTenantService,
+  getRBACService,
+  getEnterpriseDashboardService,
+  getScalabilityService,
+  getEnterpriseIntegrationService
 };
