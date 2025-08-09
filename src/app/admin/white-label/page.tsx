@@ -116,13 +116,19 @@ export default function WhiteLabelAdmin() {
             perUser: 0,
             features: {}
           },
-          paymentMethods: ['stripe', 'invoice']
+          paymentMethods: ['stripe', 'invoice'],
+          billingContact: 'admin@example.com'
         },
         access: {
           selfRegistration: formData.selfRegistration,
           requireApproval: formData.requireApproval,
           allowedDomains: [],
-          ssoEnabled: false
+          ssoEnabled: false,
+          roleMapping: {
+            admin: ['admin'],
+            therapist: ['therapist'],
+            family: ['family']
+          }
         }
       };
 

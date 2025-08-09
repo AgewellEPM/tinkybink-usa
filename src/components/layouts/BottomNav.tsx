@@ -62,6 +62,34 @@ export function BottomNav() {
       >
         🚽
       </button>
+      <button 
+        className="nav-btn reading-games" 
+        onClick={() => window.location.href = '/reading-games'}
+        title="Reading Games"
+      >
+        📚
+      </button>
+      <button 
+        className="nav-btn spelling-games" 
+        onClick={() => window.location.href = '/spelling-games'}
+        title="Spelling Games"
+      >
+        🎯
+      </button>
+      <button 
+        className="nav-btn memory-games" 
+        onClick={() => window.location.href = '/memory-games'}
+        title="Memory Games"
+      >
+        🧠
+      </button>
+      <button 
+        className="nav-btn ai-monitor" 
+        onClick={() => window.location.href = '/ai-monitor'}
+        title="AI Progress Monitor"
+      >
+        🤖
+      </button>
     </div>
   );
 }

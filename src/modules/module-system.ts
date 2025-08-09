@@ -23,6 +23,17 @@ import { EducationalGamesService, getEducationalGamesService } from './learning/
 import { MemoryTrainingService, getMemoryTrainingService } from './learning/memory-training-service';
 import { SkillAssessmentService, getSkillAssessmentService } from './learning/skill-assessment-service';
 import { getGameTrackingService } from '@/services/game-tracking';
+import { readingSpellingGamesService } from '@/services/reading-spelling-games-service';
+import { phonicsTileSystemService } from '@/services/phonics-tile-system';
+import { memoryGamesService } from '@/services/memory-games-service';
+import { aiProgressMonitorService } from '@/services/ai-progress-monitor';
+import { gpt4AnalyticsService } from '@/services/gpt4-analytics-service';
+import { userHistoryTrackingService } from '@/services/user-history-tracking-service';
+import { gpt4FocusRecommendationsService } from '@/services/gpt4-focus-recommendations-service';
+import { gameIntegrationTracker } from '@/services/game-integration-tracker';
+import { personalizedRecommendationEngine } from '@/services/personalized-recommendation-engine';
+import { realtimeUpdatesService } from '@/services/realtime-updates-service';
+import { aiGameBuilderService } from '@/services/ai-game-builder-service';
 import { RewardsSystemService, getRewardsSystemService } from './learning/rewards-system-service';
 import { GamificationService, getGamificationService } from './learning/gamification-service';
 import { CollaborationService, getCollaborationService } from './collaboration/collaboration-service';
@@ -153,13 +164,24 @@ export function getModuleSystem(): ModuleSystem {
       moduleSystemInstance.register('PrescriptionManagementService', getPrescriptionManagementService());
       moduleSystemInstance.register('ComplianceTrackingService', getComplianceTrackingService());
       
-      // Learning & Games Phase (21-25)
+      // Learning & Games Phase (21-27)
       moduleSystemInstance.register('EducationalGamesService', getEducationalGamesService());
       moduleSystemInstance.register('MemoryTrainingService', getMemoryTrainingService());
       moduleSystemInstance.register('SkillAssessmentService', getSkillAssessmentService());
       moduleSystemInstance.register('GameTrackingService', getGameTrackingService());
       moduleSystemInstance.register('RewardsSystemService', getRewardsSystemService());
       moduleSystemInstance.register('GamificationService', getGamificationService());
+      moduleSystemInstance.register('ReadingSpellingGamesService', readingSpellingGamesService);
+      moduleSystemInstance.register('PhonicsTileSystemService', phonicsTileSystemService);
+      moduleSystemInstance.register('MemoryGamesService', memoryGamesService);
+      moduleSystemInstance.register('AIProgressMonitorService', aiProgressMonitorService);
+      moduleSystemInstance.register('GPT4AnalyticsService', gpt4AnalyticsService);
+      moduleSystemInstance.register('UserHistoryTrackingService', userHistoryTrackingService);
+      moduleSystemInstance.register('GPT4FocusRecommendationsService', gpt4FocusRecommendationsService);
+      moduleSystemInstance.register('GameIntegrationTracker', gameIntegrationTracker);
+      moduleSystemInstance.register('PersonalizedRecommendationEngine', personalizedRecommendationEngine);
+      moduleSystemInstance.register('RealtimeUpdatesService', realtimeUpdatesService);
+      moduleSystemInstance.register('AIGameBuilderService', aiGameBuilderService);
       
       // Collaboration & Real-time Phase (26-30)
       moduleSystemInstance.register('CollaborationService', getCollaborationService());

@@ -496,7 +496,7 @@ class ABADataCollectionService {
     let agreements = 0;
     let occurrenceAgreements = 0;
     let nonOccurrenceAgreements = 0;
-    let totalIntervals = Math.min(observer1Data.length, observer2Data.length);
+    const totalIntervals = Math.min(observer1Data.length, observer2Data.length);
     
     for (let i = 0; i < totalIntervals; i++) {
       const obs1 = observer1Data[i] === 'occurred';

@@ -144,15 +144,7 @@ export default function TherapistOnboardingPage() {
       // Update user profile
       const user = authService.getCurrentUser();
       if (user) {
-        await authService.updateUserProfile({
-          ...user,
-          metadata: {
-            ...user.metadata,
-            onboardingComplete: true,
-            npi: npiProvider?.npi,
-            practiceInfo
-          }
-        });
+        await authService.updateUserRole(user.email, 'therapist');
       }
 
       router.push('/dashboard?welcome=true');

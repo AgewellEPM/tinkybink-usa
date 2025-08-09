@@ -616,7 +616,7 @@ class AdvancedAnalyticsDashboardService {
     const exportData: any[] = [];
     
     for (const patientId of patientIds) {
-      let patientData: any = {};
+      const patientData: any = {};
       
       // Get analytics data
       const dashboard = await this.generateDashboard(patientId, '');

@@ -13,6 +13,7 @@ import { HealthcareDashboard } from '@/components/healthcare/HealthcareDashboard
 import { BillingDashboard } from '@/components/healthcare/BillingDashboard';
 import { GameModal } from '@/components/modals/GameModal';
 import { RevolutionaryFeatures } from '@/components/RevolutionaryFeatures';
+import CalendarIntegrationPanel from '@/components/calendar-integration-panel';
 import { useAppStore } from '@/store/app-store';
 import { useEffect } from 'react';
 
@@ -69,6 +70,27 @@ export default function HomePage() {
             <h1>Billing Dashboard</h1>
           </div>
           <BillingDashboard />
+        </div>
+      </>
+    );
+  }
+
+  // When Calendar is open, show only Calendar with its own header
+  if (currentView === 'calendar') {
+    return (
+      <>
+        <StarBackground />
+        <div className="min-h-screen relative">
+          <div className="header-alt">
+            <button 
+              onClick={() => setCurrentView('tiles')}
+              className="back-btn"
+            >
+              ← Back to TinkyBink
+            </button>
+            <h1>📅 Calendar Integration</h1>
+          </div>
+          <CalendarIntegrationPanel />
         </div>
       </>
     );

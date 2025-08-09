@@ -38,7 +38,7 @@ interface AppState {
   currentBoard: string | null;
   boardHistory: string[];
   sentence: string;
-  currentView: 'tiles' | 'eliza' | 'healthcare' | 'billing';
+  currentView: 'tiles' | 'eliza' | 'healthcare' | 'billing' | 'calendar';
   currentGame: string | null;
   
   // UI state

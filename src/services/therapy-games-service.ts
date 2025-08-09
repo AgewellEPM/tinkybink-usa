@@ -205,7 +205,7 @@ class TherapyGamesService {
     );
     
     // Filter by target skills if provided
-    let filteredGames = targetSkills ? 
+    const filteredGames = targetSkills ? 
       allGames.filter(game => 
         game.targets.primary_skills.some(skill => targetSkills.includes(skill))
       ) : allGames;

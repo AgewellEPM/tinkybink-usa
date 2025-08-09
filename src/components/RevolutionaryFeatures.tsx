@@ -236,6 +236,13 @@ export function RevolutionaryFeatures() {
         >
           👨‍👩‍👧‍👦 Family Portal
         </button>
+        
+        <button
+          className="feature-toggle"
+          onClick={() => setCurrentView('calendar')}
+        >
+          📅 Calendar Sync
+        </button>
       </div>
 
       <style jsx>{`

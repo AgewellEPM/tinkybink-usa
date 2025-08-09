@@ -6,6 +6,7 @@
 import { 
   signInWithPopup, 
   GoogleAuthProvider,
+  OAuthProvider,
   signOut,
   onAuthStateChanged,
   User
@@ -30,11 +31,16 @@ class AuthService {
   private static instance: AuthService;
   private currentUser: AuthUser | null = null;
   private googleProvider: GoogleAuthProvider;
+  private appleProvider: OAuthProvider;
 
   private constructor() {
     this.googleProvider = new GoogleAuthProvider();
     this.googleProvider.addScope('profile');
     this.googleProvider.addScope('email');
+    
+    this.appleProvider = new OAuthProvider('apple.com');
+    this.appleProvider.addScope('email');
+    this.appleProvider.addScope('name');
     
     // Set up auth state listener
     this.initAuthListener();
@@ -134,6 +140,73 @@ class AuthService {
       return this.currentUser;
     } catch (error) {
       console.error('Google sign-in failed:', error);
+      throw error;
+    }
+  }
+
+  // Sign in with Apple - with role selection
+  async signInWithApple(preSelectedRole?: UserRole): Promise<AuthUser> {
+    try {
+      const result = await signInWithPopup(auth, this.appleProvider);
+      const user = result.user;
+
+      // Check if user exists in database
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      let userData = userDoc.data() as UserProfile;
+
+      if (!userData || !userData.role) {
+        // New user or no role set - prompt for role selection
+        const role = preSelectedRole || await this.promptForRole();
+        
+        // Create user profile
+        userData = {
+          userId: user.uid,
+          email: user.email!,
+          displayName: user.displayName || 'User',
+          role: role,
+          createdAt: new Date(),
+          lastActive: new Date(),
+          preferences: {
+            theme: 'light',
+            language: 'en',
+            notifications: true
+          },
+          metadata: role === 'therapist' ? { 
+            clinicId: `clinic_${user.uid}`,
+            patientIds: []
+          } : role === 'teacher' || role === 'parent' ? {
+            studentIds: []
+          } : {}
+        };
+
+        // Save to database
+        await setDoc(doc(db, 'users', user.uid), {
+          ...userData,
+          createdAt: serverTimestamp(),
+          lastActive: serverTimestamp()
+        });
+
+        // Initialize ML data collection
+        await mlDataCollection.initializeUser(userData);
+      } else {
+        // Update last active
+        await setDoc(doc(db, 'users', user.uid), {
+          lastActive: serverTimestamp()
+        }, { merge: true });
+      }
+
+      // Start new session
+      await mlDataCollection.startSession(user.uid);
+
+      this.currentUser = {
+        ...user,
+        role: userData.role,
+        metadata: userData.metadata
+      } as AuthUser;
+
+      return this.currentUser;
+    } catch (error) {
+      console.error('Apple sign-in failed:', error);
       throw error;
     }
   }

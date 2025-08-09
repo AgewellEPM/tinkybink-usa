@@ -436,11 +436,12 @@ export class BillingIntegrationService {
 
   // Private methods
   private initializeCPTCodes(): void {
-    // Common speech therapy CPT codes
+    // Common speech therapy CPT codes + Memory/Cognitive games
     const codes: CPTCode[] = [
+      // Traditional Speech Therapy Codes
       {
         code: '92507',
-        description: 'Speech/hearing therapy',
+        description: 'Speech/hearing therapy (AAC device training)',
         category: 'treatment',
         defaultRate: 150,
         defaultUnits: 1,
@@ -454,6 +455,58 @@ export class BillingIntegrationService {
         defaultUnits: 1,
         requiresModifier: false
       },
+      // AAC-Specific Codes
+      {
+        code: '92607',
+        description: 'Evaluation for speech generating device',
+        category: 'evaluation',
+        defaultRate: 200,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      {
+        code: '92608',
+        description: 'Speech generating device evaluation follow-up',
+        category: 'evaluation',
+        defaultRate: 175,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      // Cognitive/Memory Training Codes
+      {
+        code: '97130',
+        description: 'Cognitive function therapeutic activities (Memory Games)',
+        category: 'treatment',
+        defaultRate: 140,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      {
+        code: '96125',
+        description: 'Cognitive assessment by physician/psychologist (Memory Evaluation)',
+        category: 'evaluation',
+        defaultRate: 180,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      {
+        code: '96127',
+        description: 'Cognitive assessment by technician (Working Memory Test)',
+        category: 'evaluation',
+        defaultRate: 120,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      // Therapeutic Activities
+      {
+        code: '97530',
+        description: 'Therapeutic activities (Play-based AAC games)',
+        category: 'treatment',
+        defaultRate: 130,
+        defaultUnits: 1,
+        requiresModifier: false
+      },
+      // Traditional Speech Evaluations
       {
         code: '92521',
         description: 'Evaluation of speech fluency',
@@ -486,6 +539,7 @@ export class BillingIntegrationService {
         defaultUnits: 1,
         requiresModifier: false
       },
+      // Teletherapy
       {
         code: '98966',
         description: 'Telephone assessment and management',

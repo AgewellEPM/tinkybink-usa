@@ -356,6 +356,9 @@ export class MultiTenantService {
   }
 
   initialize(): void {
+    if (typeof window === 'undefined') {
+      return; // Skip initialization on server side
+    }
     console.log('MultiTenantService initializing...');
     this.loadClinics();
     this.detectCurrentClinic();
@@ -602,6 +605,7 @@ export class MultiTenantService {
   }
 
   private setupEventListeners(): void {
+    if (typeof window === 'undefined') return;
     // Listen for clinic switching
     window.addEventListener('clinicSwitch', (e: Event) => {
       const customEvent = e as CustomEvent;
@@ -654,7 +658,7 @@ export class MultiTenantService {
     }
 
     // Notify other services about clinic switch
-    window.dispatchEvent(new CustomEvent('clinicChanged', {
+    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('clinicChanged', {
       detail: { clinic, previousClinic: this.currentClinic }
     }));
 
@@ -1133,7 +1137,7 @@ export class MultiTenantService {
         issues
       });
 
-      window.dispatchEvent(new CustomEvent('complianceIssues', {
+      if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('complianceIssues', {
         detail: { clinicId, issues }
       }));
     }
@@ -1149,6 +1153,7 @@ export class MultiTenantService {
   }
 
   private detectCurrentClinic(): void {
+    if (typeof window === 'undefined') return;
     // Try to detect clinic from domain, URL parameter, or saved session
     const hostname = window.location.hostname;
     const searchParams = new URLSearchParams(window.location.search);
