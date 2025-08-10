@@ -111,7 +111,7 @@ export default function RevolutionaryOnboarding() {
                 <span className="icon eye">👁️</span>
                 <span className="icon voice">🎤</span>
                 <span className="icon heart">❤️</span>
-                <span className="icon emergency">🚨</span>
+                <span className="icon games">🎮</span>
               </div>
             </div>
             <h1>Welcome to TinkyBink</h1>
@@ -132,8 +132,8 @@ export default function RevolutionaryOnboarding() {
                 <span>Natural voice that sounds like you</span>
               </div>
               <div className="highlight">
-                <span className="icon">🚨</span>
-                <span>Emergency help always one tap away</span>
+                <span className="icon">🎯</span>
+                <span>Engaging games and learning activities</span>
               </div>
             </div>
           </div>
@@ -319,15 +319,15 @@ export default function RevolutionaryOnboarding() {
 
       case 'emergency':
         return (
-          <div className="emergency-step">
-            <h2>🚨 Always Safe, Always Connected</h2>
-            <p>Help is always just one tap away</p>
-            <div className="emergency-features">
-              <div className="emergency-demo">
-                <button className="emergency-button-demo">
-                  🚨 EMERGENCY
+          <div className="games-step">
+            <h2>🎮 Learning Through Play</h2>
+            <p>Engaging games make learning fun and effective</p>
+            <div className="games-features">
+              <div className="games-demo">
+                <button className="games-button-demo">
+                  🎯 GAMES
                 </button>
-                <p className="demo-note">Tap for instant help</p>
+                <p className="demo-note">Tap to play and learn</p>
               </div>
               <div className="emergency-capabilities">
                 <div className="capability">
