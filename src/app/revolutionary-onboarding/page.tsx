@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 import { useRouter } from 'next/navigation';
 import { voiceSynthesisService } from '@/services/voice-synthesis-service';
 import { advancedEyeTrackingService } from '@/services/advanced-eye-tracking-service';

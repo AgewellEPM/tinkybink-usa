@@ -1,5 +1,8 @@
 'use client';
 
+// Force dynamic rendering to prevent SSR issues
+export const dynamic = 'force-dynamic';
+
 import { StarBackground } from '@/components/effects/StarBackground';
 import { Header } from '@/components/layouts/Header';
 import { SentenceBar } from '@/components/layouts/SentenceBar';
