@@ -9,6 +9,7 @@ import { memoryGamesService } from './memory-games-service';
 import { readingSpellingGamesService } from './reading-spelling-games-service';
 import { phonicsTileSystemService } from './phonics-tile-system';
 import { gpt4FocusRecommendationsService } from './gpt4-focus-recommendations-service';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface GameSession {
   session_id: string;
@@ -817,7 +818,7 @@ export class GameIntegrationTracker {
   private loadTrackingData(): void {
     try {
       // Load game events
-      const savedEvents = localStorage.getItem('gameTrackingEvents');
+      const savedEvents = safeLocalStorage.getItem('gameTrackingEvents');
       if (savedEvents) {
         const data = JSON.parse(savedEvents);
         this.gameEvents = new Map(data.map(([userId, events]: [string, any[]]) => [
@@ -830,7 +831,7 @@ export class GameIntegrationTracker {
       }
 
       // Load cross-game analytics
-      const savedAnalytics = localStorage.getItem('crossGameAnalytics');
+      const savedAnalytics = safeLocalStorage.getItem('crossGameAnalytics');
       if (savedAnalytics) {
         const data = JSON.parse(savedAnalytics);
         this.crossGameAnalytics = new Map(data.map(([userId, analytics]: [string, any]) => [
@@ -855,7 +856,7 @@ export class GameIntegrationTracker {
   private saveTrackingData(): void {
     try {
       // Save game events
-      localStorage.setItem('gameTrackingEvents', JSON.stringify(
+      safeLocalStorage.setItem('gameTrackingEvents', JSON.stringify(
         Array.from(this.gameEvents.entries())
       ));
 
@@ -867,7 +868,7 @@ export class GameIntegrationTracker {
           game_performance: Object.fromEntries(analytics.game_performance.entries())
         }
       ]);
-      localStorage.setItem('crossGameAnalytics', JSON.stringify(analyticsData));
+      safeLocalStorage.setItem('crossGameAnalytics', JSON.stringify(analyticsData));
     } catch (error) {
       console.warn('Could not save game tracking data:', error);
     }

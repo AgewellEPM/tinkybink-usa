@@ -4,6 +4,8 @@
  * Handles data preparation, API calls, and intelligent interpretation
  */
 
+import { safeLocalStorage } from '@/utils/storage-helper';
+
 export interface GPT4AnalysisRequest {
   request_id: string;
   patient_id?: string;
@@ -755,7 +757,7 @@ Would you like me to analyze any specific aspect of their progress in more detai
 
   private loadConfiguration(): void {
     try {
-      const config = localStorage.getItem('gpt4_config');
+      const config = safeLocalStorage.getItem('gpt4_config');
       if (config) {
         const parsed = JSON.parse(config);
         this.apiKey = parsed.apiKey || '';
@@ -775,7 +777,7 @@ Would you like me to analyze any specific aspect of their progress in more detai
         connected: this.isConnected,
         lastUpdated: new Date()
       };
-      localStorage.setItem('gpt4_config', JSON.stringify(config));
+      safeLocalStorage.setItem('gpt4_config', JSON.stringify(config));
     } catch (error) {
       console.warn('Could not save GPT-4 configuration:', error);
     }

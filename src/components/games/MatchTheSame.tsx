@@ -22,6 +22,8 @@ export function MatchTheSame({ onClose }: { onClose: () => void }) {
   const [score, setScore] = useState(0);
   const [rounds, setRounds] = useState(0);
   const [shuffledItems, setShuffledItems] = useState<string[]>([]);
+  const [streak, setStreak] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   const startNewRound = () => {
     const items = categories[currentCategory];
@@ -42,9 +44,16 @@ export function MatchTheSame({ onClose }: { onClose: () => void }) {
     setRounds(newRounds);
     
     if (selected === targetItem) {
-      setScore(score + 1);
+      const newScore = score + 1;
+      const newStreak = streak + 1;
+      setScore(newScore);
+      setStreak(newStreak);
+      if (newScore > bestScore) {
+        setBestScore(newScore);
+      }
       speak('Perfect match!');
     } else {
+      setStreak(0);
       speak('Not quite! Try again.');
     }
     
@@ -75,9 +84,8 @@ export function MatchTheSame({ onClose }: { onClose: () => void }) {
       backdropFilter: 'blur(4px)'
     }}>
       <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)',
         borderRadius: '20px',
-        padding: '30px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -85,31 +93,69 @@ export function MatchTheSame({ onClose }: { onClose: () => void }) {
         color: 'white',
         position: 'relative'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px' }}>🎯 Match the Same</h2>
-          <button 
-            onClick={onClose}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              fontSize: '24px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ✖
-          </button>
+        {/* Top Score Bar */}
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.3)',
+          padding: '15px 20px',
+          borderTopLeftRadius: '20px',
+          borderTopRightRadius: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{score}/{rounds}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Score</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: streak > 0 ? '#ffeb3b' : 'white' }}>🔥{streak}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Streak</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4caf50' }}>🏆{bestScore}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Best</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ff9800' }}>{currentCategory.toUpperCase()}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Category</div>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ margin: 0, fontSize: '20px' }}>🎯 Match the Same</h2>
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: 'none',
+                color: 'white',
+                fontSize: '24px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ✖
+            </button>
+          </div>
         </div>
         
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ marginBottom: '16px' }}>Find the matching {currentCategory.slice(0, -1)}: <span style={{ fontSize: '48px' }}>{targetItem}</span></p>
-          <p style={{ marginBottom: '24px' }}>Score: {score}/{rounds}</p>
+        <div style={{ padding: '30px', textAlign: 'center' }}>
+          <p style={{ 
+            fontSize: '20px',
+            fontWeight: '500',
+            color: 'white',
+            textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            marginBottom: '16px'
+          }}>
+            Find the matching {currentCategory.slice(0, -1)}: <span style={{ fontSize: '48px' }}>{targetItem}</span>
+          </p>
           
           <div style={{
             display: 'grid',

@@ -36,6 +36,10 @@ export function DailyRoutineBuilder({ onClose }: { onClose: () => void }) {
   const [currentRoutine, setCurrentRoutine] = useState('Morning Routine');
   const [userRoutine, setUserRoutine] = useState<Step[]>([]);
   const [shuffledSteps, setShuffledSteps] = useState<Step[]>([]);
+  const [score, setScore] = useState(0);
+  const [rounds, setRounds] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   const updateShuffledSteps = () => {
     const routine = routines[currentRoutine];
@@ -55,8 +59,33 @@ export function DailyRoutineBuilder({ onClose }: { onClose: () => void }) {
   };
 
   const addRoutineStep = (step: Step) => {
-    setUserRoutine([...userRoutine, step]);
+    const newUserRoutine = [...userRoutine, step];
+    setUserRoutine(newUserRoutine);
     speak('Added: ' + step.text);
+    
+    // Check if routine is complete and correct
+    if (newUserRoutine.length === routine.length) {
+      const isCorrect = newUserRoutine.every((userStep, index) => 
+        userStep.text === routine[index].text
+      );
+      
+      const newRounds = rounds + 1;
+      setRounds(newRounds);
+      
+      if (isCorrect) {
+        const newScore = score + 1;
+        const newStreak = streak + 1;
+        setScore(newScore);
+        setStreak(newStreak);
+        if (newScore > bestScore) {
+          setBestScore(newScore);
+        }
+        speak('Perfect! You completed the routine in the right order!');
+      } else {
+        setStreak(0);
+        speak('Good try! Let\'s practice the correct order.');
+      }
+    }
   };
 
   const removeRoutineStep = (index: number) => {
@@ -90,9 +119,8 @@ export function DailyRoutineBuilder({ onClose }: { onClose: () => void }) {
       overflowY: 'auto'
     }}>
       <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)',
         borderRadius: '20px',
-        padding: '30px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -101,28 +129,60 @@ export function DailyRoutineBuilder({ onClose }: { onClose: () => void }) {
         position: 'relative',
         margin: '30px 0'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px' }}>📅 Daily Routine Builder</h2>
-          <button 
-            onClick={onClose}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              fontSize: '24px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ✖
-          </button>
+        {/* Top Score Bar */}
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.3)',
+          padding: '15px 20px',
+          borderTopLeftRadius: '20px',
+          borderTopRightRadius: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{score}/{rounds}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Score</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: streak > 0 ? '#ffeb3b' : 'white' }}>🔥{streak}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Streak</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4caf50' }}>🏆{bestScore}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Best</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{userRoutine.length}/{routine.length}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Steps</div>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ margin: 0, fontSize: '20px' }}>📅 Daily Routine Builder</h2>
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: 'none',
+                color: 'white',
+                fontSize: '24px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ✖
+            </button>
+          </div>
         </div>
         
+        <div style={{ padding: '30px' }}>
         <div style={{ textAlign: 'center' }}>
           <p style={{ marginBottom: '16px' }}>Build your {currentRoutine}!</p>
           
@@ -235,6 +295,7 @@ export function DailyRoutineBuilder({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@
 
 import { userHistoryTrackingService, UserAnalytics, LearningProgress, BreakthroughMoment } from './user-history-tracking-service';
 import { therapySessionLogger } from './therapy-session-logger';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface FocusRecommendation {
   recommendation_id: string;
@@ -843,7 +844,7 @@ export class GPT4FocusRecommendationsService {
   private loadRecommendationData(): void {
     try {
       // Load recommendations
-      const savedRecommendations = localStorage.getItem('gpt4FocusRecommendations');
+      const savedRecommendations = safeLocalStorage.getItem('gpt4FocusRecommendations');
       if (savedRecommendations) {
         const data = JSON.parse(savedRecommendations);
         this.recommendations = new Map(data.map(([userId, recs]: [string, any[]]) => [
@@ -856,7 +857,7 @@ export class GPT4FocusRecommendationsService {
       }
 
       // Load learning pathways
-      const savedPathways = localStorage.getItem('learningPathways');
+      const savedPathways = safeLocalStorage.getItem('learningPathways');
       if (savedPathways) {
         const data = JSON.parse(savedPathways);
         this.learningPathways = new Map(data.map(([userId, pathway]: [string, any]) => [
@@ -882,12 +883,12 @@ export class GPT4FocusRecommendationsService {
   private saveRecommendationData(): void {
     try {
       // Save recommendations
-      localStorage.setItem('gpt4FocusRecommendations', JSON.stringify(
+      safeLocalStorage.setItem('gpt4FocusRecommendations', JSON.stringify(
         Array.from(this.recommendations.entries())
       ));
 
       // Save learning pathways
-      localStorage.setItem('learningPathways', JSON.stringify(
+      safeLocalStorage.setItem('learningPathways', JSON.stringify(
         Array.from(this.learningPathways.entries())
       ));
     } catch (error) {

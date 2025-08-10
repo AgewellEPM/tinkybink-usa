@@ -7,6 +7,7 @@
 import { Appointment, appointmentSchedulingService } from './appointment-scheduling-service';
 import { getBillingIntegrationService } from '../modules/professional/billing-integration-service';
 import { realtimeUpdatesService } from './realtime-updates-service';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 interface CalendarProvider {
   name: string;
@@ -993,7 +994,7 @@ export class CalendarIntegrationService {
 
   private loadProviderConfigurations(): void {
     try {
-      const saved = localStorage.getItem('calendarProviders');
+      const saved = safeLocalStorage.getItem('calendarProviders');
       if (saved) {
         const providers = JSON.parse(saved);
         Object.entries(providers).forEach(([id, config]) => {
@@ -1008,7 +1009,7 @@ export class CalendarIntegrationService {
   private saveProviderConfigurations(): void {
     try {
       const providers = Object.fromEntries(this.providers);
-      localStorage.setItem('calendarProviders', JSON.stringify(providers));
+      safeLocalStorage.setItem('calendarProviders', JSON.stringify(providers));
     } catch (error) {
       console.warn('Could not save calendar provider configurations:', error);
     }

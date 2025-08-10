@@ -10,23 +10,29 @@ export class SpeechService {
   };
 
   constructor() {
-    this.synth = window.speechSynthesis;
-    this.initialize();
+    if (typeof window !== 'undefined') {
+      this.synth = window.speechSynthesis;
+      this.initialize();
+    }
   }
 
   initialize() {
+    if (!this.synth) return;
+    
     const loadVoices = () => {
       this.voices = this.synth.getVoices();
       console.log(`Loaded ${this.voices.length} voices`);
     };
 
     loadVoices();
-    if (speechSynthesis.onvoiceschanged !== undefined) {
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = loadVoices;
     }
   }
 
   speak(text: string) {
+    if (!this.synth) return;
+    
     if (this.synth.speaking) {
       this.synth.cancel();
     }
@@ -44,15 +50,21 @@ export class SpeechService {
   }
 
   stop() {
-    this.synth.cancel();
+    if (this.synth) {
+      this.synth.cancel();
+    }
   }
 
   pause() {
-    this.synth.pause();
+    if (this.synth) {
+      this.synth.pause();
+    }
   }
 
   resume() {
-    this.synth.resume();
+    if (this.synth) {
+      this.synth.resume();
+    }
   }
 
   getVoices() {
@@ -78,8 +90,8 @@ export class SpeechService {
 let speechServiceInstance: SpeechService | null = null;
 
 export function getSpeechService(): SpeechService {
-  if (!speechServiceInstance) {
+  if (!speechServiceInstance && typeof window !== 'undefined') {
     speechServiceInstance = new SpeechService();
   }
-  return speechServiceInstance;
+  return speechServiceInstance!;
 }

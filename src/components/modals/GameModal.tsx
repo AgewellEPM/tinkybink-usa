@@ -9,6 +9,12 @@ import { YesOrNoGame } from '@/components/games/YesOrNoGame';
 import { SoundMatching } from '@/components/games/SoundMatching';
 import { WhatsMissing } from '@/components/games/WhatsMissing';
 import { DailyRoutineBuilder } from '@/components/games/DailyRoutineBuilder';
+import { FirstLetterMatch } from '@/components/games/FirstLetterMatch';
+import { SequenceBuilder } from '@/components/games/SequenceBuilder';
+import { WhatComesNext } from '@/components/games/WhatComesNext';
+import { MatchEmotion } from '@/components/games/MatchEmotion';
+import { SayTheSentence } from '@/components/games/SayTheSentence';
+import { WhatDoYouWear } from '@/components/games/WhatDoYouWear';
 
 interface GameModalProps {
   gameType: string | null;
@@ -28,6 +34,12 @@ export function GameModal({ gameType, onClose }: GameModalProps) {
     soundMatch: SoundMatching,
     whatsMissing: WhatsMissing,
     routineBuilder: DailyRoutineBuilder,
+    firstLetterMatch: FirstLetterMatch,
+    sequenceBuilder: SequenceBuilder,
+    whatComesNext: WhatComesNext,
+    matchEmotion: MatchEmotion,
+    sayTheSentence: SayTheSentence,
+    whatDoYouWear: WhatDoYouWear,
   };
 
   const GameComponent = gameComponents[gameType as keyof typeof gameComponents];

@@ -19,6 +19,10 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
   
   const [items, setItems] = useState<string[]>([]);
   const [sortedItems, setSortedItems] = useState<{[key: string]: string[]}>({});
+  const [score, setScore] = useState(0);
+  const [rounds, setRounds] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   const startSorting = () => {
     // Mix items from all rooms
@@ -41,6 +45,14 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
     const correctRoom = Object.keys(rooms).find(room => rooms[room].includes(item));
     
     if (correctRoom) {
+      const newScore = score + 1;
+      const newStreak = streak + 1;
+      setScore(newScore);
+      setStreak(newStreak);
+      if (newScore > bestScore) {
+        setBestScore(newScore);
+      }
+      
       const newSortedItems = { ...sortedItems };
       newSortedItems[correctRoom] = [...newSortedItems[correctRoom], item];
       setSortedItems(newSortedItems);
@@ -50,6 +62,12 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
       setItems(newItems);
       
       speak('Good job! ' + item + ' goes in the ' + correctRoom + '!');
+      
+      // Check if all items are done to increment rounds
+      if (newItems.length === 0) {
+        const newRounds = rounds + 1;
+        setRounds(newRounds);
+      }
     }
   };
 
@@ -73,9 +91,8 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
       overflowY: 'auto'
     }}>
       <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)',
         borderRadius: '20px',
-        padding: '30px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -84,28 +101,60 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
         position: 'relative',
         margin: '30px 0'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px' }}>📦 Put Away Items</h2>
-          <button 
-            onClick={onClose}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              fontSize: '24px',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ✖
-          </button>
+        {/* Top Score Bar */}
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.3)',
+          padding: '15px 20px',
+          borderTopLeftRadius: '20px',
+          borderTopRightRadius: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{score}/{Object.values(rooms).flat().length * rounds}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Score</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: streak > 0 ? '#ffeb3b' : 'white' }}>🔥{streak}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Streak</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4caf50' }}>🏆{bestScore}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Best</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{items.length}</div>
+              <div style={{ fontSize: '12px', opacity: 0.8 }}>Remaining</div>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ margin: 0, fontSize: '20px' }}>📦 Put Away Items</h2>
+            <button 
+              onClick={onClose}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: 'none',
+                color: 'white',
+                fontSize: '24px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ✖
+            </button>
+          </div>
         </div>
         
+        <div style={{ padding: '30px' }}>
         <div style={{ textAlign: 'center' }}>
           <p style={{ marginBottom: '16px' }}>Click items to put them in the correct room!</p>
           
@@ -204,6 +253,7 @@ export function PutAwayItems({ onClose }: { onClose: () => void }) {
               </button>
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>

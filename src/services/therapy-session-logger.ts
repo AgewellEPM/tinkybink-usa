@@ -4,6 +4,8 @@
  * Generates HIPAA-compliant documentation with CPT codes for insurance billing
  */
 
+import { safeLocalStorage } from '@/utils/storage-helper';
+
 export interface TherapyToolSession {
   session_id: string;
   user_id: string;
@@ -838,7 +840,7 @@ class TherapySessionLoggerService {
 
   private loadSessionData(): void {
     try {
-      const saved = localStorage.getItem('therapy_sessions');
+      const saved = safeLocalStorage.getItem('therapy_sessions');
       if (saved) {
         const data = JSON.parse(saved);
         // Restore completed sessions
@@ -870,7 +872,7 @@ class TherapySessionLoggerService {
         summaries: Object.fromEntries(this.sessionSummaries),
         lastSaved: new Date()
       };
-      localStorage.setItem('therapy_sessions', JSON.stringify(data));
+      safeLocalStorage.setItem('therapy_sessions', JSON.stringify(data));
     } catch (error) {
       console.warn('Could not save therapy session data:', error);
     }

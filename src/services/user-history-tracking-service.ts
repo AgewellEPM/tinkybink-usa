@@ -8,6 +8,7 @@ import { therapySessionLogger } from './therapy-session-logger';
 import { memoryGamesService } from './memory-games-service';
 import { readingSpellingGamesService } from './reading-spelling-games-service';
 import { phonicsTileSystemService } from './phonics-tile-system';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface UserInteraction {
   interaction_id: string;
@@ -790,7 +791,7 @@ export class UserHistoryTrackingService {
   private loadHistoryData(): void {
     try {
       // Load interactions
-      const savedInteractions = localStorage.getItem('userHistoryInteractions');
+      const savedInteractions = safeLocalStorage.getItem('userHistoryInteractions');
       if (savedInteractions) {
         const data = JSON.parse(savedInteractions);
         this.interactions = new Map(data.map(([userId, interactions]: [string, any[]]) => [
@@ -803,7 +804,7 @@ export class UserHistoryTrackingService {
       }
 
       // Load sessions
-      const savedSessions = localStorage.getItem('userHistorySessions');
+      const savedSessions = safeLocalStorage.getItem('userHistorySessions');
       if (savedSessions) {
         const data = JSON.parse(savedSessions);
         this.sessions = new Map(data.map(([userId, sessions]: [string, any[]]) => [
@@ -817,7 +818,7 @@ export class UserHistoryTrackingService {
       }
 
       // Load learning progress
-      const savedProgress = localStorage.getItem('userLearningProgress');
+      const savedProgress = safeLocalStorage.getItem('userLearningProgress');
       if (savedProgress) {
         const data = JSON.parse(savedProgress);
         this.learningProgress = new Map(data.map(([userId, progressMap]: [string, any]) => [
@@ -842,12 +843,12 @@ export class UserHistoryTrackingService {
   private saveHistoryData(): void {
     try {
       // Save interactions
-      localStorage.setItem('userHistoryInteractions', JSON.stringify(
+      safeLocalStorage.setItem('userHistoryInteractions', JSON.stringify(
         Array.from(this.interactions.entries())
       ));
 
       // Save sessions
-      localStorage.setItem('userHistorySessions', JSON.stringify(
+      safeLocalStorage.setItem('userHistorySessions', JSON.stringify(
         Array.from(this.sessions.entries())
       ));
 
@@ -856,7 +857,7 @@ export class UserHistoryTrackingService {
         userId,
         Object.fromEntries(progressMap.entries())
       ]);
-      localStorage.setItem('userLearningProgress', JSON.stringify(progressData));
+      safeLocalStorage.setItem('userLearningProgress', JSON.stringify(progressData));
     } catch (error) {
       console.warn('Could not save user history data:', error);
     }

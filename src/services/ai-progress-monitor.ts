@@ -4,6 +4,8 @@
  * Provides continuous insights and recommendations for patient outcomes
  */
 
+import { safeLocalStorage } from '@/utils/storage-helper';
+
 export interface PatientProfile {
   patient_id: string;
   name: string;
@@ -784,9 +786,9 @@ Which patient would you like to focus on, or what specific area interests you?`;
   }
 
   private loadPatientData(): void {
-    // Load from localStorage or API
+    // Load from safeLocalStorage or API
     try {
-      const saved = localStorage.getItem('tinkybink_patient_profiles');
+      const saved = safeLocalStorage.getItem('tinkybink_patient_profiles');
       if (saved) {
         const data = JSON.parse(saved);
         // Convert to Map and restore dates
@@ -879,7 +881,7 @@ Which patient would you like to focus on, or what specific area interests you?`;
   private savePatientData(): void {
     try {
       const data = Object.fromEntries(this.patientProfiles);
-      localStorage.setItem('tinkybink_patient_profiles', JSON.stringify(data));
+      safeLocalStorage.setItem('tinkybink_patient_profiles', JSON.stringify(data));
     } catch (error) {
       console.warn('Could not save patient data:', error);
     }

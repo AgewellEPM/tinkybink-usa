@@ -128,8 +128,10 @@ class VoiceSynthesisService {
   private currentVoiceProfile: VoiceProfile | null = null;
 
   private constructor() {
-    this.speechSynthesis = window.speechSynthesis;
-    this.initializeVoiceService();
+    if (typeof window !== 'undefined') {
+      this.speechSynthesis = window.speechSynthesis;
+      this.initializeVoiceService();
+    }
   }
 
   static getInstance(): VoiceSynthesisService {

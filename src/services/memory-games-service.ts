@@ -6,6 +6,7 @@
  */
 
 import { therapySessionLogger } from './therapy-session-logger';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface MemoryGameSession {
   session_id: string;
@@ -608,7 +609,7 @@ export class MemoryGamesService {
 
   private loadMemoryProgress(): void {
     try {
-      const saved = localStorage.getItem('tinkybink_memory_progress');
+      const saved = safeLocalStorage.getItem('tinkybink_memory_progress');
       if (saved) {
         const data = JSON.parse(saved);
         this.memoryData = new Map(Object.entries(data));
@@ -621,7 +622,7 @@ export class MemoryGamesService {
   private saveMemoryProgress(): void {
     try {
       const data = Object.fromEntries(this.memoryData);
-      localStorage.setItem('tinkybink_memory_progress', JSON.stringify(data));
+      safeLocalStorage.setItem('tinkybink_memory_progress', JSON.stringify(data));
     } catch (error) {
       console.warn('Could not save memory progress:', error);
     }

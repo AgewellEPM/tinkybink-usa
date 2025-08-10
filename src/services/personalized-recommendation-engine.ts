@@ -8,6 +8,7 @@ import { userHistoryTrackingService, UserAnalytics } from './user-history-tracki
 import { gpt4FocusRecommendationsService, FocusRecommendation } from './gpt4-focus-recommendations-service';
 import { gameIntegrationTracker, CrossGameAnalytics, ActivityRecommendation } from './game-integration-tracker';
 import { therapySessionLogger } from './therapy-session-logger';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface PersonalizedRecommendation {
   recommendation_id: string;
@@ -1189,7 +1190,7 @@ export class PersonalizedRecommendationEngine {
   private loadRecommendationData(): void {
     try {
       // Load user recommendations
-      const savedRecommendations = localStorage.getItem('personalizedRecommendations');
+      const savedRecommendations = safeLocalStorage.getItem('personalizedRecommendations');
       if (savedRecommendations) {
         const data = JSON.parse(savedRecommendations);
         this.userRecommendations = new Map(data.map(([userId, recs]: [string, any[]]) => [
@@ -1206,7 +1207,7 @@ export class PersonalizedRecommendationEngine {
       }
 
       // Load learning profiles
-      const savedProfiles = localStorage.getItem('adaptiveLearningProfiles');
+      const savedProfiles = safeLocalStorage.getItem('adaptiveLearningProfiles');
       if (savedProfiles) {
         const data = JSON.parse(savedProfiles);
         this.learningProfiles = new Map(Object.entries(data));
@@ -1221,12 +1222,12 @@ export class PersonalizedRecommendationEngine {
   private saveRecommendationData(): void {
     try {
       // Save user recommendations
-      localStorage.setItem('personalizedRecommendations', JSON.stringify(
+      safeLocalStorage.setItem('personalizedRecommendations', JSON.stringify(
         Array.from(this.userRecommendations.entries())
       ));
 
       // Save learning profiles
-      localStorage.setItem('adaptiveLearningProfiles', JSON.stringify(
+      safeLocalStorage.setItem('adaptiveLearningProfiles', JSON.stringify(
         Object.fromEntries(this.learningProfiles.entries())
       ));
     } catch (error) {

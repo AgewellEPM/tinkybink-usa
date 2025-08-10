@@ -8,6 +8,7 @@ import { getTileManagementService } from '../modules/ui/tile-management-service'
 import { getBoardManager } from '../modules/core/board-manager';
 import { gpt4AnalyticsService } from './gpt4-analytics-service';
 import { userHistoryTrackingService } from './user-history-tracking-service';
+import { safeLocalStorage } from '@/utils/storage-helper';
 
 export interface GameRequest {
   request_id: string;
@@ -672,7 +673,7 @@ export class AIGameBuilderService {
 
   private loadGameData(): void {
     try {
-      const savedRequests = localStorage.getItem('aiGameRequests');
+      const savedRequests = safeLocalStorage.getItem('aiGameRequests');
       if (savedRequests) {
         const data = JSON.parse(savedRequests);
         data.forEach((req: any) => {
@@ -681,7 +682,7 @@ export class AIGameBuilderService {
         });
       }
 
-      const savedGames = localStorage.getItem('aiGeneratedGames');
+      const savedGames = safeLocalStorage.getItem('aiGeneratedGames');
       if (savedGames) {
         const data = JSON.parse(savedGames);
         data.forEach((game: any) => {
@@ -697,10 +698,10 @@ export class AIGameBuilderService {
   private saveGameData(): void {
     try {
       const requests = Array.from(this.gameRequests.values());
-      localStorage.setItem('aiGameRequests', JSON.stringify(requests));
+      safeLocalStorage.setItem('aiGameRequests', JSON.stringify(requests));
 
       const games = Array.from(this.generatedGames.values());
-      localStorage.setItem('aiGeneratedGames', JSON.stringify(games));
+      safeLocalStorage.setItem('aiGeneratedGames', JSON.stringify(games));
     } catch (error) {
       console.warn('Could not save AI game data:', error);
     }
