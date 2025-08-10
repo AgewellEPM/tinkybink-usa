@@ -488,6 +488,11 @@ class MultiDeviceSyncService {
   }
 
   private setupDeviceListeners(): void {
+    // Skip event listeners during SSR
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return;
+    }
+    
     // Listen for visibility change to pause/resume sync
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
