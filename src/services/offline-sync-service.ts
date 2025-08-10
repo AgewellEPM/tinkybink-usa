@@ -270,7 +270,8 @@ class OfflineSyncService {
    * Cache critical resources for offline use
    */
   async cacheCriticalResources(): Promise<void> {
-    if (!('caches' in window)) {
+    // Skip caching during SSR
+    if (typeof window === 'undefined' || !('caches' in window)) {
       console.warn('Cache API not available');
       return;
     }
@@ -306,7 +307,7 @@ class OfflineSyncService {
    * Get storage information
    */
   async getStorageInfo(): Promise<string> {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
+    if (typeof navigator !== 'undefined' && 'storage' in navigator && 'estimate' in navigator.storage) {
       const estimate = await navigator.storage.estimate();
       const usage = estimate.usage || 0;
       const quota = estimate.quota || 0;
