@@ -330,11 +330,11 @@ class OfflineSyncService {
         quota: 0
       },
       features: {
-        serviceWorker: 'serviceWorker' in navigator,
-        indexedDB: 'indexedDB' in window,
-        localStorage: 'localStorage' in window,
-        cacheAPI: 'caches' in window,
-        backgroundSync: 'sync' in ServiceWorkerRegistration.prototype
+        serviceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
+        indexedDB: typeof window !== 'undefined' && 'indexedDB' in window,
+        localStorage: typeof window !== 'undefined' && 'localStorage' in window,
+        cacheAPI: typeof window !== 'undefined' && 'caches' in window,
+        backgroundSync: typeof ServiceWorkerRegistration !== 'undefined' && 'sync' in ServiceWorkerRegistration.prototype
       },
       models: {
         predictiveAI: this.isModelCached('predictive'),
@@ -606,6 +606,11 @@ async function syncOfflineData() {
   }
 
   private fallbackToLocalStorage(data: OfflineData): void {
+    // Skip localStorage during SSR
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+    
     try {
       const key = `offline_${data.type}_${data.userId}`;
       const existing = localStorage.getItem(key);
@@ -626,6 +631,11 @@ async function syncOfflineData() {
   }
 
   private getFromLocalStorage(type: string, userId: string): any[] {
+    // Skip localStorage during SSR
+    if (typeof localStorage === 'undefined') {
+      return [];
+    }
+    
     try {
       const key = `offline_${type}_${userId}`;
       const data = localStorage.getItem(key);
@@ -637,7 +647,7 @@ async function syncOfflineData() {
   }
 
   private async getFromCache(type: string, userId: string): Promise<any[]> {
-    if (!('caches' in window)) return [];
+    if (typeof window === 'undefined' || !('caches' in window)) return [];
     
     try {
       const cache = await caches.open('tinkybink-data-v1');
