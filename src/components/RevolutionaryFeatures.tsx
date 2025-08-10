@@ -16,9 +16,7 @@ import { useAppStore } from '@/store/app-store';
  * Making TinkyBink the world's most advanced AAC platform
  */
 export function RevolutionaryFeatures() {
-  const { setCurrentView } = useAppStore();
-  const [isPredictiveActive, setIsPredictiveActive] = useState(false);
-  const [isEyeTrackingActive, setIsEyeTrackingActive] = useState(false);
+  const { setCurrentView, isPredictiveActive, isEyeTrackingActive } = useAppStore();
   const [predictions, setPredictions] = useState<any[]>([]);
   const [gazeTarget, setGazeTarget] = useState<string | null>(null);
   // const [emergencyMode, setEmergencyMode] = useState(false);
@@ -30,10 +28,16 @@ export function RevolutionaryFeatures() {
     initializeRevolutionaryFeatures();
     
     // setupEmergencyShortcuts(); // Disabled for production
-    
-    // Start predictive engine by default
-    startPredictiveCommunication();
   }, []);
+
+  useEffect(() => {
+    // Start/stop predictive engine based on settings
+    if (isPredictiveActive) {
+      startPredictiveCommunication();
+    } else {
+      setPredictions([]); // Clear predictions when disabled
+    }
+  }, [isPredictiveActive]);
 
   const initializeRevolutionaryFeatures = async () => {
     console.log('🚀 Initializing Revolutionary Features...');

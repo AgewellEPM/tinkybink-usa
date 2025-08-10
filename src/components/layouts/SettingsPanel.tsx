@@ -26,6 +26,8 @@ export function SettingsPanel() {
     updateSettings,
     setCurrentGame,
     setCurrentView,
+    isPredictiveActive,
+    isEyeTrackingActive,
   } = useAppStore();
 
   // Listen for settings toggle
@@ -44,10 +46,6 @@ export function SettingsPanel() {
   const [gamesService, setGamesService] = useState<ReturnType<typeof getEducationalGamesService> | null>(null);
   const [memoryService, setMemoryService] = useState<ReturnType<typeof getMemoryTrainingService> | null>(null);
   const [assessmentService, setAssessmentService] = useState<ReturnType<typeof getSkillAssessmentService> | null>(null);
-  
-  // Revolutionary Features states
-  const [isPredictiveActive, setIsPredictiveActive] = useState(false);
-  const [isEyeTrackingActive, setIsEyeTrackingActive] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -290,7 +288,7 @@ export function SettingsPanel() {
             <input
               type="checkbox"
               checked={isPredictiveActive}
-              onChange={(e) => setIsPredictiveActive(e.target.checked)}
+              onChange={(e) => updateSettings({ isPredictiveActive: e.target.checked })}
               style={{ width: '18px', height: '18px', cursor: 'pointer' }}
             />
             🧠 AI Predictions
@@ -307,7 +305,7 @@ export function SettingsPanel() {
               checked={isEyeTrackingActive}
               onChange={async (e) => {
                 const enabled = e.target.checked;
-                setIsEyeTrackingActive(enabled);
+                updateSettings({ isEyeTrackingActive: enabled });
                 if (enabled) {
                   await advancedEyeTrackingService.startTracking('user123');
                 } else {

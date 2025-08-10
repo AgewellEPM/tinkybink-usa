@@ -49,6 +49,10 @@ interface AppState {
   gridColumns: number;
   tileScale: number;
   
+  // Revolutionary Features state
+  isPredictiveActive: boolean;
+  isEyeTrackingActive: boolean;
+  
   // Actions
   setTiles: (tiles: Tile[]) => void;
   addTile: (tile: Tile) => void;
@@ -94,6 +98,10 @@ export const useAppStore = create<AppState>()(
       speechVolume: 1,
       gridColumns: 3,
       tileScale: 1,
+      
+      // Revolutionary Features defaults
+      isPredictiveActive: false,
+      isEyeTrackingActive: false,
       
       // Actions
       setTiles: (tiles) => set({ tiles }),
