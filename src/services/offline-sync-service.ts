@@ -60,7 +60,7 @@ class OfflineSyncService {
   private db: IDBDatabase | null = null;
   private serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
   private syncQueue: OfflineData[] = [];
-  private isOnline: boolean = navigator.onLine;
+  private isOnline: boolean = typeof navigator !== 'undefined' ? navigator.onLine : true;
   private syncInProgress: boolean = false;
   
   // Critical data that must be available offline
@@ -407,6 +407,11 @@ class OfflineSyncService {
   }
 
   private async initializeIndexedDB(): Promise<void> {
+    // Skip IndexedDB initialization during SSR
+    if (typeof indexedDB === 'undefined') {
+      return Promise.resolve();
+    }
+    
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('TinkyBinkOffline', 1);
       

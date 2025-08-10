@@ -794,6 +794,11 @@ class EmergencyCommunicationService {
   }
 
   private setupEmergencyUI(): void {
+    // Skip UI setup during SSR
+    if (typeof document === 'undefined') {
+      return;
+    }
+    
     // Add emergency button to main interface
     const emergencyButton = document.createElement('button');
     emergencyButton.id = 'emergency-quick-access';
