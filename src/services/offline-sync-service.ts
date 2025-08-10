@@ -784,26 +784,34 @@ async function syncOfflineData() {
 
   private async cacheModel(model: { name: string; size: number; priority: number }): Promise<void> {
     // Skip caching during SSR when database is not available
-    if (!this.db) {
+    if (!this.db || typeof window === 'undefined') {
       return;
     }
     
-    // In production, would download and cache actual model
-    const tx = this.db.transaction(['cachedModels'], 'readwrite');
-    const store = tx.objectStore('cachedModels');
+    try {
+      // In production, would download and cache actual model
+      const tx = this.db.transaction(['cachedModels'], 'readwrite');
+      if (!tx) {
+        return;
+      }
+      const store = tx.objectStore('cachedModels');
     
-    await new Promise((resolve, reject) => {
-      const request = store.put({
-        name: model.name,
-        size: model.size,
-        priority: model.priority,
-        cachedAt: new Date(),
-        version: '3.0.0'
+      await new Promise((resolve, reject) => {
+        const request = store.put({
+          name: model.name,
+          size: model.size,
+          priority: model.priority,
+          cachedAt: new Date(),
+          version: '3.0.0'
+        });
+        
+        request.onsuccess = () => resolve(undefined);
+        request.onerror = () => reject(request.error);
       });
-      
-      request.onsuccess = () => resolve(undefined);
-      request.onerror = () => reject(request.error);
-    });
+    } catch (error) {
+      console.error(`Failed to cache ${model.name} model:`, error);
+      return;
+    }
   }
 }
 
