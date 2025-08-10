@@ -99,17 +99,28 @@ class MultiDeviceSyncService {
   private signalSocket: WebSocket | null = null;
 
   private constructor() {
-    this.syncState = {
-      devices: [],
-      syncInProgress: false,
-      lastSyncTime: new Date(0),
-      syncErrors: [],
-      dataVersions: new Map(),
-      pendingChanges: []
-    };
-    
-    this.currentDevice = this.detectCurrentDevice();
-    this.initializeSync();
+    try {
+      this.syncState = {
+        devices: [],
+        syncInProgress: false,
+        lastSyncTime: new Date(0),
+        syncErrors: [],
+        dataVersions: new Map(),
+        pendingChanges: []
+      };
+      
+      this.currentDevice = this.detectCurrentDevice();
+      
+      // Initialize sync only in browser environment
+      if (typeof window !== 'undefined') {
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => this.initializeSync(), 0);
+      }
+    } catch (error) {
+      console.warn('Multi-device sync initialization deferred:', error);
+      // Provide fallback
+      this.currentDevice = this.getDefaultDevice();
+    }
   }
 
   static getInstance(): MultiDeviceSyncService {

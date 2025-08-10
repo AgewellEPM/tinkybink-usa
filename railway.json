@@ -9,5 +9,9 @@
     "healthcheckPath": "/",
     "healthcheckTimeout": 300,
     "restartPolicyType": "always"
+  },
+  "environments": {
+    "NODE_ENV": "production",
+    "CACHE_BUST": "2025-08-10"
   }
 }
