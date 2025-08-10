@@ -61,10 +61,12 @@ export default function RevolutionaryOnboarding() {
   };
 
   const completeOnboarding = async () => {
-    // Save onboarding preferences
-    localStorage.setItem('onboarding_completed', 'true');
-    localStorage.setItem('user_type', userType || 'user');
-    localStorage.setItem('eyeTrackingEnabled', String(eyeTrackingEnabled));
+    // Save onboarding preferences (only in browser)
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('onboarding_completed', 'true');
+      localStorage.setItem('user_type', userType || 'user');
+      localStorage.setItem('eyeTrackingEnabled', String(eyeTrackingEnabled));
+    }
     
     // Navigate to main app
     router.push('/');

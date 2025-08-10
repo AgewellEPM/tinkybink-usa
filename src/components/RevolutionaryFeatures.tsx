@@ -42,10 +42,12 @@ export function RevolutionaryFeatures() {
     // All services are already initialized via singletons
     // Just need to connect them to UI
     
-    // Check if user has eye tracking preference
-    const userPreference = localStorage.getItem('eyeTrackingEnabled');
-    if (userPreference === 'true') {
-      await startEyeTracking();
+    // Check if user has eye tracking preference (only in browser)
+    if (typeof localStorage !== 'undefined') {
+      const userPreference = localStorage.getItem('eyeTrackingEnabled');
+      if (userPreference === 'true') {
+        await startEyeTracking();
+      }
     }
   };
 
