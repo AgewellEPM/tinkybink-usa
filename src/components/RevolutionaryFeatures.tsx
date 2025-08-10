@@ -32,9 +32,22 @@ export function RevolutionaryFeatures() {
     // Check for emergency shortcuts
     setupEmergencyShortcuts();
     
+    // Setup emergency exit shortcut (Escape key)
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && emergencyMode) {
+        exitEmergencyMode();
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyPress);
+    
     // Start predictive engine by default
     startPredictiveCommunication();
-  }, []);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [emergencyMode]);
 
   const initializeRevolutionaryFeatures = async () => {
     console.log('🚀 Initializing Revolutionary Features...');
@@ -132,6 +145,27 @@ export function RevolutionaryFeatures() {
     });
   };
 
+  const exitEmergencyMode = async () => {
+    setEmergencyMode(false);
+    emergencyCommunicationService.exitEmergencyMode();
+    
+    // Clear any emergency state from localStorage
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('emergencyMode');
+      localStorage.removeItem('emergencyActive');
+    }
+    
+    // Speak confirmation message
+    try {
+      await voiceSynthesisService.speak({
+        text: 'Emergency mode deactivated.',
+        priority: 'normal'
+      });
+    } catch (error) {
+      console.log('Voice synthesis not available');
+    }
+  };
+
   const getCurrentTimeOfDay = (): 'morning' | 'afternoon' | 'evening' | 'night' => {
     const hour = new Date().getHours();
     if (hour < 12) return 'morning';
@@ -190,6 +224,23 @@ export function RevolutionaryFeatures() {
         <div className="eye-tracking-indicator">
           <div className="eye-icon">👁️</div>
           <span>Eye Tracking Active</span>
+        </div>
+      )}
+
+      {/* Emergency Mode Indicator */}
+      {emergencyMode && (
+        <div className="emergency-mode-indicator">
+          <div className="emergency-status">
+            <span className="emergency-icon">🚨</span>
+            <span className="emergency-text">Emergency Mode Active</span>
+            <button
+              className="exit-emergency-button"
+              onClick={exitEmergencyMode}
+              aria-label="Exit Emergency Mode"
+            >
+              ❌ Exit
+            </button>
+          </div>
         </div>
       )}
 
