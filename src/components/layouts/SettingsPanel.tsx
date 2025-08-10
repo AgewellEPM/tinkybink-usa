@@ -84,10 +84,14 @@ export function SettingsPanel() {
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
+    console.log('🔧 Settings: Changing Language to:', langCode);
     if (languageService?.setLanguage(langCode)) {
       setCurrentLanguage(langCode);
       // Update voice recognition language
       voiceRecognition?.setLanguage(langCode + '-' + langCode.toUpperCase());
+      console.log('✅ Language changed successfully to:', langCode);
+    } else {
+      console.error('❌ Failed to change language to:', langCode);
     }
   };
 
@@ -121,6 +125,17 @@ export function SettingsPanel() {
         <button className="close" onClick={() => setIsOpen(false)}>
           ✖
         </button>
+      </div>
+
+      {/* Debug Info */}
+      <div className="settings-section" style={{ background: 'rgba(255,0,0,0.1)', border: '1px solid red', margin: '10px 0' }}>
+        <h3>🐛 Debug Info</h3>
+        <div style={{ fontSize: '12px', color: '#ccc' }}>
+          <p>Speech Rate: {speechRate}</p>
+          <p>Grid Columns: {gridColumns}</p>  
+          <p>AI Predictions: {isPredictiveActive.toString()}</p>
+          <p>Current Language: {currentLanguage}</p>
+        </div>
       </div>
 
       <div className="settings-section">
@@ -158,7 +173,11 @@ export function SettingsPanel() {
             max="2"
             step="0.1"
             value={speechRate}
-            onChange={(e) => updateSettings({ speechRate: parseFloat(e.target.value) })}
+            onChange={(e) => {
+              const newValue = parseFloat(e.target.value);
+              console.log('🔧 Settings: Changing Speech Rate to:', newValue);
+              updateSettings({ speechRate: newValue });
+            }}
           />
         </div>
         <div className="setting-item">
@@ -245,7 +264,11 @@ export function SettingsPanel() {
             max="5"
             step="1"
             value={gridColumns}
-            onChange={(e) => updateSettings({ gridColumns: parseInt(e.target.value) })}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value);
+              console.log('🔧 Settings: Changing Grid Columns to:', newValue);
+              updateSettings({ gridColumns: newValue });
+            }}
           />
         </div>
         <div className="setting-item">
