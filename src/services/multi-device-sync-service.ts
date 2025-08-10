@@ -340,7 +340,33 @@ class MultiDeviceSyncService {
 
   // Private helper methods
 
+  private getDefaultDevice(): Device {
+    return {
+      id: `device_ssr_${Date.now()}`,
+      name: 'Server (SSR)',
+      type: 'computer',
+      platform: 'web',
+      capabilities: {
+        screen: true,
+        touch: false,
+        voice_input: false,
+        voice_output: false,
+        eye_tracking: false,
+        haptic_feedback: false
+      },
+      status: 'online',
+      lastSeen: new Date(),
+      syncPriority: 5,
+      isCurrentDevice: true
+    };
+  }
+
   private detectCurrentDevice(): Device {
+    // Handle SSR - return default device
+    if (typeof navigator === 'undefined') {
+      return this.getDefaultDevice();
+    }
+    
     const userAgent = navigator.userAgent.toLowerCase();
     let type: Device['type'] = 'computer';
     let platform: Device['platform'] = 'web';
@@ -366,11 +392,11 @@ class MultiDeviceSyncService {
       platform,
       capabilities: {
         screen: true,
-        touch: 'ontouchstart' in window,
-        voice_input: 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window,
-        voice_output: 'speechSynthesis' in window,
+        touch: typeof window !== 'undefined' && 'ontouchstart' in window,
+        voice_input: typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window),
+        voice_output: typeof window !== 'undefined' && 'speechSynthesis' in window,
         eye_tracking: false, // Would detect actual hardware
-        haptic_feedback: 'vibrate' in navigator
+        haptic_feedback: typeof navigator !== 'undefined' && 'vibrate' in navigator
       },
       status: 'online',
       lastSeen: new Date(),

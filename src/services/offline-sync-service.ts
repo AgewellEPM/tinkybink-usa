@@ -778,8 +778,13 @@ async function syncOfflineData() {
   }
 
   private async cacheModel(model: { name: string; size: number; priority: number }): Promise<void> {
+    // Skip caching during SSR when database is not available
+    if (!this.db) {
+      return;
+    }
+    
     // In production, would download and cache actual model
-    const tx = this.db!.transaction(['cachedModels'], 'readwrite');
+    const tx = this.db.transaction(['cachedModels'], 'readwrite');
     const store = tx.objectStore('cachedModels');
     
     await new Promise((resolve, reject) => {
