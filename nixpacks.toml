@@ -1,0 +1,20 @@
+[build]
+[phases.build]
+dependsOn = ["install"]
+cmds = [
+  "npm run build"
+]
+
+[phases.install]
+cmds = [
+  "npm ci --cache /tmp/.npm"
+]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+NODE_OPTIONS = "--max-old-space-size=4096"
+DISABLE_ESLINT_PLUGIN = "true"
+GENERATE_SOURCEMAP = "false"
