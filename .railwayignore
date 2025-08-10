@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+*.log
+.env.local
+.vscode
+README.md
+*.md
+App_images
+extracted-modules
+*.sh
+server.pid
+server.log
+dev.log
+test-*.js
+.DS_Store
