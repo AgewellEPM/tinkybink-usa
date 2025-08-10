@@ -13,6 +13,7 @@ import { BillingSection } from '@/components/settings/sections/BillingSection';
 import { ProductionManagementSection } from '@/components/settings/sections/ProductionManagementSection';
 import { AccessibilitySection } from '@/components/settings/sections/AccessibilitySection';
 import { SubscriptionSection } from '@/components/settings/SubscriptionSection';
+import { advancedEyeTrackingService } from '@/services/advanced-eye-tracking-service';
 
 export function SettingsPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +25,7 @@ export function SettingsPanel() {
     tileScale,
     updateSettings,
     setCurrentGame,
+    setCurrentView,
   } = useAppStore();
 
   // Listen for settings toggle
@@ -42,6 +44,10 @@ export function SettingsPanel() {
   const [gamesService, setGamesService] = useState<ReturnType<typeof getEducationalGamesService> | null>(null);
   const [memoryService, setMemoryService] = useState<ReturnType<typeof getMemoryTrainingService> | null>(null);
   const [assessmentService, setAssessmentService] = useState<ReturnType<typeof getSkillAssessmentService> | null>(null);
+  
+  // Revolutionary Features states
+  const [isPredictiveActive, setIsPredictiveActive] = useState(false);
+  const [isEyeTrackingActive, setIsEyeTrackingActive] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -272,6 +278,115 @@ export function SettingsPanel() {
               console.log('Text size:', e.target.value);
             }}
           />
+        </div>
+      </div>
+
+      {/* Revolutionary Features Section */}
+      <div className="settings-section">
+        <h3>🚀 Revolutionary Features</h3>
+        
+        <div className="setting-item">
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="checkbox"
+              checked={isPredictiveActive}
+              onChange={(e) => setIsPredictiveActive(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            🧠 AI Predictions
+          </label>
+          <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+            Smart word and sentence suggestions
+          </small>
+        </div>
+
+        <div className="setting-item">
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="checkbox"
+              checked={isEyeTrackingActive}
+              onChange={async (e) => {
+                const enabled = e.target.checked;
+                setIsEyeTrackingActive(enabled);
+                if (enabled) {
+                  await advancedEyeTrackingService.startTracking('user123');
+                } else {
+                  await advancedEyeTrackingService.stopTracking('user123');
+                }
+              }}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            👁️ Eye Tracking
+          </label>
+          <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+            Control with eye movements
+          </small>
+        </div>
+
+        <div className="setting-item">
+          <button
+            onClick={() => setCurrentView('clinical')}
+            className="feature-button"
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              width: '100%',
+              marginTop: '8px'
+            }}
+          >
+            🏥 Clinical Insights
+          </button>
+        </div>
+
+        <div className="setting-item">
+          <button
+            onClick={() => setCurrentView('family')}
+            className="feature-button"
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              width: '100%',
+              marginTop: '8px'
+            }}
+          >
+            👨‍👩‍👧‍👦 Family Portal
+          </button>
+        </div>
+
+        <div className="setting-item">
+          <button
+            onClick={() => setCurrentView('calendar')}
+            className="feature-button"
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              width: '100%',
+              marginTop: '8px'
+            }}
+          >
+            📅 Calendar Sync
+          </button>
         </div>
       </div>
 

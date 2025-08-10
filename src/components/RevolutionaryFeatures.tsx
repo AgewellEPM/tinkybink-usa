@@ -243,50 +243,7 @@ export function RevolutionaryFeatures() {
       </button>
       */}
 
-      {/* Feature Control Panel */}
-      <div className="feature-controls">
-        <button
-          className={`feature-toggle ${isPredictiveActive ? 'active' : ''}`}
-          onClick={() => setIsPredictiveActive(!isPredictiveActive)}
-        >
-          🧠 AI Predictions
-        </button>
-        
-        <button
-          className={`feature-toggle ${isEyeTrackingActive ? 'active' : ''}`}
-          onClick={async () => {
-            if (isEyeTrackingActive) {
-              await advancedEyeTrackingService.stopTracking('user123');
-              setIsEyeTrackingActive(false);
-            } else {
-              await startEyeTracking();
-            }
-          }}
-        >
-          👁️ Eye Tracking
-        </button>
-        
-        <button
-          className="feature-toggle"
-          onClick={() => setCurrentView('clinical')}
-        >
-          🏥 Clinical Insights
-        </button>
-        
-        <button
-          className="feature-toggle"
-          onClick={() => setCurrentView('family')}
-        >
-          👨‍👩‍👧‍👦 Family Portal
-        </button>
-        
-        <button
-          className="feature-toggle"
-          onClick={() => setCurrentView('calendar')}
-        >
-          📅 Calendar Sync
-        </button>
-      </div>
+      {/* Feature controls moved to Settings panel */}
 
       <style jsx>{`
         .revolutionary-features {
@@ -432,37 +389,7 @@ export function RevolutionaryFeatures() {
         }
         */
 
-        .feature-controls {
-          display: flex;
-          gap: 0.5rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
-        .feature-toggle {
-          background: white;
-          border: 2px solid #e2e8f0;
-          border-radius: 8px;
-          padding: 0.5rem 1rem;
-          font-size: 0.875rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .feature-toggle:hover {
-          background: #f7fafc;
-          border-color: #667eea;
-        }
-
-        .feature-toggle.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border-color: transparent;
-        }
+        /* Feature control styles moved to Settings panel */
       `}</style>
     </div>
   );
