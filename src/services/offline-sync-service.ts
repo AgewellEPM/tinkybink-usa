@@ -580,6 +580,11 @@ async function syncOfflineData() {
   }
 
   private async saveToIndexedDB(data: OfflineData): Promise<void> {
+    if (!this.db) {
+      console.warn('IndexedDB not available during SSR');
+      return Promise.resolve();
+    }
+    
     return new Promise((resolve, reject) => {
       const tx = this.db!.transaction(['offlineData'], 'readwrite');
       const store = tx.objectStore('offlineData');
@@ -769,7 +774,7 @@ async function syncOfflineData() {
   }
 
   private async checkStorageSpace(requiredMB: number): Promise<boolean> {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
+    if (typeof navigator !== 'undefined' && 'storage' in navigator && 'estimate' in navigator.storage) {
       const estimate = await navigator.storage.estimate();
       const availableMB = ((estimate.quota || 0) - (estimate.usage || 0)) / 1024 / 1024;
       return availableMB >= requiredMB;

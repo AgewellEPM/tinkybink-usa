@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 // Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
 import { useRouter } from 'next/navigation';
-import { voiceSynthesisService } from '@/services/voice-synthesis-service';
-import { advancedEyeTrackingService } from '@/services/advanced-eye-tracking-service';
-import { multiDeviceSyncService } from '@/services/multi-device-sync-service';
+// Dynamic imports to avoid SSR issues
+let voiceSynthesisService: any = null;
+let advancedEyeTrackingService: any = null;
+let multiDeviceSyncService: any = null;
 
 /**
  * Revolutionary Onboarding Flow
@@ -36,11 +37,35 @@ export default function RevolutionaryOnboarding() {
   ];
 
   useEffect(() => {
-    // Initialize onboarding
-    initializeOnboarding();
+    // Load services and initialize onboarding (browser only)
+    loadServicesAndInitialize();
   }, []);
 
+  const loadServicesAndInitialize = async () => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Dynamically import services in browser only
+      const [voiceModule, eyeModule, syncModule] = await Promise.all([
+        import('@/services/voice-synthesis-service'),
+        import('@/services/advanced-eye-tracking-service'),
+        import('@/services/multi-device-sync-service')
+      ]);
+      
+      voiceSynthesisService = voiceModule.voiceSynthesisService;
+      advancedEyeTrackingService = eyeModule.advancedEyeTrackingService;
+      multiDeviceSyncService = syncModule.multiDeviceSyncService;
+      
+      // Initialize onboarding with services loaded
+      await initializeOnboarding();
+    } catch (error) {
+      console.warn('Failed to load services:', error);
+    }
+  };
+
   const initializeOnboarding = async () => {
+    if (!voiceSynthesisService) return;
+    
     // Speak welcome message
     await voiceSynthesisService.speak({
       text: 'Welcome to TinkyBink. Let\'s set up your revolutionary communication system.',
@@ -165,7 +190,7 @@ export default function RevolutionaryOnboarding() {
               <button
                 className="voice-option"
                 onClick={async () => {
-                  await voiceSynthesisService.previewVoice('default', 'Hello! I sound friendly and clear.');
+                  if (voiceSynthesisService) await voiceSynthesisService.previewVoice('default', 'Hello! I sound friendly and clear.');
                   setVoiceSelected(true);
                 }}
               >
@@ -176,7 +201,7 @@ export default function RevolutionaryOnboarding() {
               <button
                 className="voice-option"
                 onClick={async () => {
-                  await voiceSynthesisService.previewVoice('young', 'Hi! I sound young and energetic!');
+                  if (voiceSynthesisService) await voiceSynthesisService.previewVoice('young', 'Hi! I sound young and energetic!');
                   setVoiceSelected(true);
                 }}
               >
@@ -187,7 +212,7 @@ export default function RevolutionaryOnboarding() {
               <button
                 className="voice-option premium"
                 onClick={async () => {
-                  await voiceSynthesisService.previewVoice('premium', 'I use advanced AI for the most natural speech.');
+                  if (voiceSynthesisService) await voiceSynthesisService.previewVoice('premium', 'I use advanced AI for the most natural speech.');
                   setVoiceSelected(true);
                 }}
               >
@@ -274,13 +299,15 @@ export default function RevolutionaryOnboarding() {
               <button
                 className="try-eye-tracking"
                 onClick={async () => {
-                  const success = await advancedEyeTrackingService.startTracking('demo_user');
-                  setEyeTrackingEnabled(success);
-                  if (success) {
-                    await voiceSynthesisService.speak({
+                  if (advancedEyeTrackingService) {
+                    const success = await advancedEyeTrackingService.startTracking('demo_user');
+                    setEyeTrackingEnabled(success);
+                    if (success && voiceSynthesisService) {
+                      await voiceSynthesisService.speak({
                       text: 'Eye tracking activated. Look at any button to select it.',
                       priority: 'high'
                     });
+                    }
                   }
                 }}
               >
@@ -428,7 +455,7 @@ export default function RevolutionaryOnboarding() {
                 </div>
               </div>
               <div className="device-status">
-                <p>Detected devices: {multiDeviceSyncService.getConnectedDevices().length}</p>
+                <p>Detected devices: {multiDeviceSyncService ? multiDeviceSyncService.getConnectedDevices().length : 0}</p>
               </div>
             </div>
           </div>

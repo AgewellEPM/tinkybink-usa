@@ -510,6 +510,7 @@ class VoiceSynthesisService {
   private async loadVoiceProfiles(): Promise<void> {
     // Load saved voice profiles from storage
     try {
+      if (typeof localStorage === 'undefined') return;
       const savedProfiles = localStorage.getItem('voiceProfiles');
       if (savedProfiles) {
         const profiles = JSON.parse(savedProfiles);
@@ -780,7 +781,9 @@ class VoiceSynthesisService {
         }
       }));
       
-      localStorage.setItem('voiceProfiles', JSON.stringify(profiles));
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('voiceProfiles', JSON.stringify(profiles));
+      }
     } catch (error) {
       console.error('Failed to save voice profile:', error);
     }

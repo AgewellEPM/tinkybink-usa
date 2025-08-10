@@ -2,7 +2,7 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "nixpacks",
-    "buildCommand": "npm run build"
+    "buildCommand": "NODE_OPTIONS='--max-old-space-size=4096' npm run build"
   },
   "deploy": {
     "startCommand": "npm start",
@@ -12,6 +12,9 @@
   },
   "environments": {
     "NODE_ENV": "production",
-    "CACHE_BUST": "2025-08-10"
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "GENERATE_SOURCEMAP": "false",
+    "CACHE_BUST": "2025-08-10-v2"
   }
 }

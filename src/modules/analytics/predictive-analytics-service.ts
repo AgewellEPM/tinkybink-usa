@@ -4,8 +4,8 @@ import { getAnalyticsService } from '../core/analytics-service';
 import { getBoardManager } from '../core/board-manager';
 import { getLanguageService } from '../communication/language-service';
 
-// Dynamic import for TensorFlow.js (optional dependency)
-let tf: typeof import('@tensorflow/tfjs') | null = null;
+// TensorFlow.js fallback - optional dependency
+let tf: any = null;
 
 interface PredictionModel {
   id: string;
@@ -93,13 +93,17 @@ export class PredictiveAnalyticsService {
   async initialize(): Promise<void> {
     console.log('PredictiveAnalyticsService initializing...');
     
-    // Try to load TensorFlow.js dynamically
-    try {
-      if (typeof window !== 'undefined') {
-        tf = await import('@tensorflow/tfjs').catch(() => null);
+    // Try to load TensorFlow.js dynamically (browser only)
+    if (typeof window !== 'undefined') {
+      try {
+        tf = await import('@tensorflow/tfjs');
+        console.log('TensorFlow.js loaded successfully');
+      } catch (error) {
+        console.warn('TensorFlow.js not available, using fallback predictions:', error);
+        tf = null;
       }
-    } catch (error) {
-      console.warn('TensorFlow.js not available, using fallback predictions');
+    } else {
+      console.log('Server-side rendering - TensorFlow.js will be loaded on client side');
     }
     
     await this.loadUserProfile();

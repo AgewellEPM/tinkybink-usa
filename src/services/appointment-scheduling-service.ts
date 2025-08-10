@@ -1601,6 +1601,7 @@ export class AppointmentSchedulingService {
 
   private loadScheduleData(): void {
     try {
+      if (typeof localStorage === 'undefined') return;
       const savedAppointments = localStorage.getItem('appointmentSchedules');
       if (savedAppointments) {
         const data = JSON.parse(savedAppointments);
