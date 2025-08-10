@@ -32,9 +32,12 @@ export function RevolutionaryFeatures() {
 
   useEffect(() => {
     // Start/stop predictive engine based on settings
+    console.log('🧠 AI Predictions toggle changed:', isPredictiveActive);
     if (isPredictiveActive) {
+      console.log('🟢 Starting predictive communication...');
       startPredictiveCommunication();
     } else {
+      console.log('🔴 Clearing predictions...');
       setPredictions([]); // Clear predictions when disabled
     }
   }, [isPredictiveActive]);
@@ -55,7 +58,8 @@ export function RevolutionaryFeatures() {
   };
 
   const startPredictiveCommunication = async () => {
-    setIsPredictiveActive(true);
+    // Don't start if not enabled in settings
+    if (!isPredictiveActive) return;
     
     // Generate initial predictions
     const context = {
@@ -169,7 +173,14 @@ export function RevolutionaryFeatures() {
 
   return (
     <div className="revolutionary-features">
-      {/* Predictive Communication Bar */}
+      {/* Debug: Show current state */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{ position: 'fixed', top: 0, left: 0, background: 'black', color: 'white', padding: '4px', fontSize: '10px', zIndex: 9999 }}>
+          AI Active: {isPredictiveActive.toString()} | Predictions: {predictions.length}
+        </div>
+      )}
+      
+      {/* Predictive Communication Bar - Only show when enabled */}
       {isPredictiveActive && predictions.length > 0 && (
         <div className="predictive-bar">
           <div className="predictive-title">

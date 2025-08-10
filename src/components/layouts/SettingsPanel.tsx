@@ -288,7 +288,11 @@ export function SettingsPanel() {
             <input
               type="checkbox"
               checked={isPredictiveActive}
-              onChange={(e) => updateSettings({ isPredictiveActive: e.target.checked })}
+              onChange={(e) => {
+                const newValue = e.target.checked;
+                console.log('🔧 Settings: Changing AI Predictions to:', newValue);
+                updateSettings({ isPredictiveActive: newValue });
+              }}
               style={{ width: '18px', height: '18px', cursor: 'pointer' }}
             />
             🧠 AI Predictions
