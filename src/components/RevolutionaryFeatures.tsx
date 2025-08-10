@@ -21,7 +21,7 @@ export function RevolutionaryFeatures() {
   const [isEyeTrackingActive, setIsEyeTrackingActive] = useState(false);
   const [predictions, setPredictions] = useState<any[]>([]);
   const [gazeTarget, setGazeTarget] = useState<string | null>(null);
-  const [emergencyMode, setEmergencyMode] = useState(false);
+  // const [emergencyMode, setEmergencyMode] = useState(false);
   const [clinicalInsights, setClinicalInsights] = useState<any>(null);
   const [familyEngaged, setFamilyEngaged] = useState(false);
 
@@ -29,25 +29,11 @@ export function RevolutionaryFeatures() {
     // Initialize revolutionary features
     initializeRevolutionaryFeatures();
     
-    // Check for emergency shortcuts
-    setupEmergencyShortcuts();
-    
-    // Setup emergency exit shortcut (Escape key)
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && emergencyMode) {
-        exitEmergencyMode();
-      }
-    };
-    
-    document.addEventListener('keydown', handleKeyPress);
+    // setupEmergencyShortcuts(); // Disabled for production
     
     // Start predictive engine by default
     startPredictiveCommunication();
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [emergencyMode]);
+  }, []);
 
   const initializeRevolutionaryFeatures = async () => {
     console.log('🚀 Initializing Revolutionary Features...');
@@ -105,6 +91,8 @@ export function RevolutionaryFeatures() {
     }
   };
 
+  // Emergency mode functionality disabled for production version
+  /*
   const setupEmergencyShortcuts = () => {
     // Triple-tap for emergency
     let tapCount = 0;
@@ -165,6 +153,7 @@ export function RevolutionaryFeatures() {
       console.log('Voice synthesis not available');
     }
   };
+  */
 
   const getCurrentTimeOfDay = (): 'morning' | 'afternoon' | 'evening' | 'night' => {
     const hour = new Date().getHours();
@@ -227,7 +216,8 @@ export function RevolutionaryFeatures() {
         </div>
       )}
 
-      {/* Emergency Mode Indicator */}
+      {/* Emergency mode UI disabled for production */}
+      {/*
       {emergencyMode && (
         <div className="emergency-mode-indicator">
           <div className="emergency-status">
@@ -244,7 +234,6 @@ export function RevolutionaryFeatures() {
         </div>
       )}
 
-      {/* Emergency Button (Always Visible) */}
       <button
         className="emergency-button"
         onClick={() => activateEmergencyMode('help')}
@@ -252,6 +241,7 @@ export function RevolutionaryFeatures() {
       >
         🚨
       </button>
+      */}
 
       {/* Feature Control Panel */}
       <div className="feature-controls">
@@ -411,6 +401,7 @@ export function RevolutionaryFeatures() {
           95% { opacity: 0.3; }
         }
 
+        /* Emergency button styles disabled for production
         .emergency-button {
           position: fixed;
           bottom: 20px;
@@ -439,6 +430,7 @@ export function RevolutionaryFeatures() {
         .emergency-button:active {
           transform: scale(0.95);
         }
+        */
 
         .feature-controls {
           display: flex;
