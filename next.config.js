@@ -1,21 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Railway deployment optimizations
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  
-  // Build optimizations
   swcMinify: false,
-  poweredByHeader: false,
-  
-  // Experimental features for better compatibility
-  experimental: {
-    esmExternals: false,
-  },
+  output: 'standalone',
   
   // Environment configuration removed - using system env vars
   
